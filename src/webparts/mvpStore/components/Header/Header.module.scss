@@ -1,0 +1,30 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.HeadComponent{
+    width: 100%;
+    height: 5%;
+    text-transform: uppercase;
+    color: #666;
+    font-size: .85rem;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #ddd;
+
+    .Header{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .Category{
+            font-weight: 800;
+            border-bottom: 2px solid;
+            margin-bottom: -2px;
+            border-bottom-color: $ms-color-themePrimary; 
+        }
+
+        .Post{
+            font-weight: 800;
+        }
+    }
+}

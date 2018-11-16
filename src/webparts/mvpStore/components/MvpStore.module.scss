@@ -1,0 +1,23 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.mvpStore {
+  height: 90vh;
+  width: 100%;
+
+  .container{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    @include ms-Grid-row;
+
+    .mainView{
+      @include ms-Grid-col;
+      @include ms-md9;
+    }
+
+    .categoryView{
+      @include ms-Grid-col;
+      @include ms-md3;
+    }
+  }
+}
