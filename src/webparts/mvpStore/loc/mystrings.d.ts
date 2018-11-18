@@ -2,6 +2,7 @@ declare interface IMvpStoreWebPartStrings {
   PropertyPaneDescription: string;
   BasicGroupName: string;
   DescriptionFieldLabel: string;
+
 }
 
 declare module 'MvpStoreWebPartStrings' {

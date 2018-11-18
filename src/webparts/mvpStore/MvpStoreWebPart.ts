@@ -6,13 +6,13 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-webpart-base';
-
+import { PropertyFieldListPicker, PropertyFieldListPickerOrderBy } from '@pnp/spfx-property-controls/lib/PropertyFieldListPicker';
 import * as strings from 'MvpStoreWebPartStrings';
 import MvpStore from './components/MvpStore';
 import { IMvpStoreProps } from './components/IMvpStoreProps';
 
 export interface IMvpStoreWebPartProps {
-  description: string;
+  list: string;
 }
 
 export default class MvpStoreWebPart extends BaseClientSideWebPart<IMvpStoreWebPartProps> {
@@ -21,11 +21,18 @@ export default class MvpStoreWebPart extends BaseClientSideWebPart<IMvpStoreWebP
     const element: React.ReactElement<IMvpStoreProps > = React.createElement(
       MvpStore,
       {
-        description: this.properties.description
+        siteURL: this.context.pageContext.web.absoluteUrl,
+        _onConfigure: this._onConfigure.bind(this),
+        list: this.properties.list
       }
     );
 
     ReactDom.render(element, this.domElement);
+  }
+
+  private _onConfigure() {
+    // Context of the web part
+    this.context.propertyPane.open();
   }
 
   protected onDispose(): void {
@@ -41,14 +48,24 @@ export default class MvpStoreWebPart extends BaseClientSideWebPart<IMvpStoreWebP
       pages: [
         {
           header: {
-            description: strings.PropertyPaneDescription
+            description: 'Configure MVP Store Setup'
           },
           groups: [
             {
-              groupName: strings.BasicGroupName,
+              groupName: '',
               groupFields: [
-                PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
+                PropertyFieldListPicker('list', {
+                  label: 'Select a MVP Store Config List',
+                  selectedList: this.properties.list,
+                  includeHidden: false,
+                  orderBy: PropertyFieldListPickerOrderBy.Title,
+                  disabled: false,
+                  onPropertyChange: this.onPropertyPaneFieldChanged.bind(this),
+                  properties: this.properties,
+                  context: this.context,
+                  onGetErrorMessage: null,
+                  deferredValidationTime: 0,
+                  key: 'list'
                 })
               ]
             }

@@ -1,7 +1,7 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
 .mvpStore {
-  height: 90vh;
+  height: 80vh;
   width: 100%;
 
   .container{
@@ -12,12 +12,16 @@
 
     .mainView{
       @include ms-Grid-col;
+      @include ms-lg8;
       @include ms-md9;
+      @include ms-sm12;
     }
 
     .categoryView{
       @include ms-Grid-col;
+      @include ms-lg4;
       @include ms-md3;
+      @include ms-sm12;
     }
   }
 }

@@ -1,0 +1,75 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+
+.DocumentCard{
+    height: 300px;
+    width: 49%;
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 11px;
+    margin-left: 1px;
+    margin-right: 1px;
+
+    &:hover{
+        outline: 1px solid #ccc;
+    }
+
+    .ImageContainer{
+        height: 78%;
+        width: 100%;
+        box-sizing: border-box;
+        border-bottom: 1px solid #ddd;
+
+        .Image{
+            height: inherit;
+            width: 100%;
+        }
+    }
+
+    .DetailSection{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding-left: 2px;
+        padding-bottom: 4px;
+        box-sizing: border-box;
+
+        .Function{
+            font-size: 16px;
+            font-family: inherit;
+            font-weight: 400;
+            font-style: normal;
+            color: $ms-color-themePrimary;
+            padding-bottom: 5px;
+
+            span{
+                padding-right: 2px;
+                
+                &:hover{
+                    text-decoration: underline;
+                    text-decoration-color: $ms-color-themePrimary;
+                }
+
+            }
+            
+        }
+
+        .Name{
+            font-size: 17px;
+            font-weight: 400;
+            color: #111;
+            line-height: 21px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+            &:hover{
+                text-decoration: underline;
+                text-decoration-color: #111;
+            }
+        }
+
+    }
+
+}
