@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styles from './MvpStore.module.scss';
-import { IMvpStoreProps, IFunctionFieldChoices, IMVPStoreData } from './IMvpStoreProps';
+import { IMvpStoreProps, IFunctionFieldChoices, IMVPStoreData, FieldName } from './IMvpStoreProps';
 import { escape, uniq } from '@microsoft/sp-lodash-subset';
 import MainView from './MainView/MainView';
 import FilterView from './FilterView/FilterView';
@@ -8,6 +8,7 @@ import pnp, { Web } from "sp-pnp-js";
 import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
 import { IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
 import { IconType } from 'office-ui-fabric-react/lib/Icon';
+import NewItem from './NewItemView/NewItem';
 
 
 export interface IMvpStoreState {
@@ -17,6 +18,7 @@ export interface IMvpStoreState {
   mvpStoreData: IMVPStoreData[];
   data: IMVPStoreData[];
   postCount: any;
+  hideDialog: boolean;
 }
 
 
@@ -35,7 +37,8 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
       selectedCategoryType: "All",
       mvpStoreData: [],
       data: [],
-      postCount: "All"
+      postCount: "All",
+      hideDialog: true
     };
   }
 
@@ -88,13 +91,13 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
   protected getFieldDetailsForFilter = async () => {
     let web = new Web(this.props.siteURL);
     const listGUID: string = this.state.list;
-    const fieldInternalName: string = "Target_x0020_User_x0020_Group";
+    const fieldInternalName: string = FieldName.Function;
     let tempFilters: IChoiceGroupOption[] = [];
 
     if (web && listGUID) {
       const data = await web.lists.getById(listGUID).fields.getByInternalNameOrTitle(fieldInternalName).select('Choices').usingCaching({
         expiration: pnp.util.dateAdd(new Date, "minute", 60),
-        key: listGUID,
+        key: `${listGUID}_${fieldInternalName}`,
         storeName: "local"
       }).configure({
         headers: {
@@ -129,6 +132,9 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
     }
   }
 
+  /**
+   * Filter Data Collection based on Filter click
+   */
   protected getFilteredData = async () => {
 
     const data: IMVPStoreData[] = [...this.state.data];
@@ -205,7 +211,30 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
 
   }
 
+  protected onAddButtonClickHandler = (): void => {
+    this.setState({
+      hideDialog: false
+    });
+  }
+
+  protected onDismissCalledHandler = (): void => {
+    this.setState({
+      hideDialog: true
+    });
+  }
+
   public render(): React.ReactElement<IMvpStoreProps> {
+    const showNewItem: JSX.Element = !this.state.hideDialog ? 
+    <NewItem
+      hideDialog={this.state.hideDialog}
+      onDismissCalled={this.onDismissCalledHandler.bind(this)}
+      context={this.props.context}
+      siteURL={this.props.siteURL}
+      listGUID={this.state.list}
+    />
+    :
+    null;
+    
     return (
       <div className={styles.mvpStore}>
         {
@@ -216,7 +245,9 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
                   CategoryType={this.state.selectedCategoryType}
                   CardsData={(this.state.mvpStoreData && this.state.mvpStoreData.length > 0) ? this.state.mvpStoreData : []}
                   PostCount={this.state.selectedCategoryType === "All" ? "All" : this.state.mvpStoreData.length}
+                  onAddButtonClick={this.onAddButtonClickHandler.bind(this)}
                 />
+                {showNewItem}
               </div>
               <div className={styles.categoryView}>
                 <FilterView

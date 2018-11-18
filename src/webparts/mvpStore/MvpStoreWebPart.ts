@@ -23,7 +23,8 @@ export default class MvpStoreWebPart extends BaseClientSideWebPart<IMvpStoreWebP
       {
         siteURL: this.context.pageContext.web.absoluteUrl,
         _onConfigure: this._onConfigure.bind(this),
-        list: this.properties.list
+        list: this.properties.list,
+        context: this.context
       }
     );
 

@@ -8,6 +8,7 @@ export interface IMainViewProps {
     CategoryType: string;
     CardsData: IMVPStoreData[];
     PostCount: any;
+    onAddButtonClick:() => void;
 }
 
 const mainView = (props: IMainViewProps) => {
@@ -16,6 +17,7 @@ const mainView = (props: IMainViewProps) => {
             <Header
                 CategoryType={props.CategoryType}
                 PostCount={props.PostCount}
+                onAddButtonClick={props.onAddButtonClick.bind(this)}
             />
             <InfoCards 
                 CardsData={props.CardsData}

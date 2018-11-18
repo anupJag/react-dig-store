@@ -16,12 +16,22 @@
         flex-direction: row;
         justify-content: space-between;
 
-        .Category{
-            font-weight: 800;
-            border-bottom: 2px solid;
-            margin-bottom: -2px;
-            border-bottom-color: $ms-color-themePrimary; 
+        .SubContainer{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 40%;
+
+            .Category{
+                font-weight: 800;
+                border-bottom: 2px solid;
+                margin-bottom: -2px;
+                border-bottom-color: $ms-color-themePrimary; 
+            }
+
         }
+
+        
 
         .Post{
             font-weight: 800;
