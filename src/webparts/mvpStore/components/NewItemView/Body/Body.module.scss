@@ -29,8 +29,17 @@
                 width: 496.513px;
             }
 
+            .isDisabled{
+                display: none;
+            }
+
+            .isActive{
+                display: block;
+                margin-top: 10px;
+            }
+
             .InputPeoplePicker{
-                width: 70%;
+                width: 496.513px;
 
                 div[id="people"] label{
                     display: none;

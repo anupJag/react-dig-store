@@ -7,6 +7,7 @@ import pnp, { Web } from 'sp-pnp-js';
 import { FieldName } from '../IMvpStoreProps';
 import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
+import { IComboBoxOption } from 'office-ui-fabric-react/lib/ComboBox';
 
 
 export interface INewItemProps {
@@ -26,9 +27,16 @@ export interface INewItemState {
     Country: IDropdownOption[];
     Function: IDropdownOption[];
     showSpinner: boolean;
+    isTechnologyDisabled: boolean;
+    isDataSourceDisabled: boolean;
+    isWhoCreatedTheSolutionDisabled: boolean;
+    file: any;
+    imagePreviewUrl: any;
 }
 
 export default class NewItem extends React.Component<INewItemProps, INewItemState>{
+
+    private _others: string = "Others";
 
     /**
      * Default constructor
@@ -43,7 +51,12 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             WhoCreatedTheSolution: [],
             Country: [],
             Function: [],
-            showSpinner: true
+            showSpinner: true,
+            isTechnologyDisabled: false,
+            isDataSourceDisabled: false,
+            isWhoCreatedTheSolutionDisabled: false,
+            file: '',
+            imagePreviewUrl: ''
         };
     }
 
@@ -103,11 +116,16 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                     p["Choices"].forEach(element => {
                         tempTechnologyPlatform.push({
                             text: element,
-                            key: element
+                            key: element,
                         });
                     });
                 }
             }
+
+            tempTechnologyPlatform.push({
+                key: this._others,
+                text: this._others
+            });
 
             await this.setState({
                 TechnologyPlatform: tempTechnologyPlatform
@@ -136,6 +154,11 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                     });
                 }
             }
+
+            tempDataSources.push({
+                key: this._others,
+                text: this._others
+            });
 
             await this.setState({
                 DataSource: tempDataSources
@@ -221,6 +244,11 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                 }
             }
 
+            tempWhoCreatedTheSolution.push({
+                key: this._others,
+                text: this._others
+            });
+
             await this.setState({
                 WhoCreatedTheSolution: tempWhoCreatedTheSolution
             });
@@ -272,6 +300,44 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         console.log('Items:', items);
     }
 
+    private handleImageChangeHandler = (event): void => {
+        let reader = new FileReader();
+        let file = event.target.files[0];
+
+        reader.onloadend = () => {
+            this.setState({
+                file: file,
+                imagePreviewUrl: reader.result
+            });
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+    protected onTechnologyPlatformChangeHandler = (item: IDropdownOption) => {
+        if (item.key === this._others) {
+            this.setState({
+                isTechnologyDisabled: true
+            });
+        }
+    }
+
+    protected onDataSourceChangeHandler = (item: IDropdownOption) => {
+        if (item.key === this._others) {
+            this.setState({
+                isDataSourceDisabled: true
+            });
+        }
+    }
+
+    protected onWhoCreatedTheSolutionChangeHandler = (item: IDropdownOption) => {
+        if (item.key === this._others) {
+            this.setState({
+                isWhoCreatedTheSolutionDisabled: true
+            });
+        }
+    }
+
     public render(): React.ReactElement<INewItemProps> {
 
         return (
@@ -287,12 +353,6 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                 getStyles={this.getDialogStyles}
             >
                 <div>
-                    {/* {
-                        this.state.showSpinner ?
-                            <Spinner size={SpinnerSize.large} label={"Getting things ready"} />
-                            :
-                            
-                    } */}
                     <FormBody
                         context={this.props.context}
                         _getPeoplePickerItems={this._getPeoplePickerItemsHandler.bind(this)}
@@ -300,6 +360,17 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                         function={this.state.Function && this.state.Function.length > 0 ? this.state.Function : []}
                         country={this.state.Country && this.state.Country.length > 0 ? this.state.Country : []}
                         segment={this.state.Segment && this.state.Segment.length > 0 ? this.state.Segment : []}
+                        technologyPlatform={this.state.TechnologyPlatform && this.state.TechnologyPlatform.length > 0 ? this.state.TechnologyPlatform : []}
+                        isTechnologyDisabled={this.state.isTechnologyDisabled}
+                        onTechnologyPlatformDropDownChange={this.onTechnologyPlatformChangeHandler.bind(this)}
+                        dataSource={this.state.DataSource && this.state.DataSource.length > 0 ? this.state.DataSource : []}
+                        isDataSourceDisabled={this.state.isDataSourceDisabled}
+                        onDataSourceDropDownChange={this.onDataSourceChangeHandler.bind(this)}
+                        whoCreatedTheSolution={this.state.WhoCreatedTheSolution && this.state.WhoCreatedTheSolution.length > 0 ? this.state.WhoCreatedTheSolution : []}
+                        isWhoCreatedTheSolutionDisabled={this.state.isWhoCreatedTheSolutionDisabled}
+                        onWhoCreatedTheSolutionDropDownChange={this.onWhoCreatedTheSolutionChangeHandler.bind(this)}
+                        imagePreviewUrl={this.state.imagePreviewUrl}
+                        handleImageChange={this.handleImageChangeHandler.bind(this)}
                     />
                 </div>
                 <div>

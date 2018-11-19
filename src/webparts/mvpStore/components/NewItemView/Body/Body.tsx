@@ -3,7 +3,9 @@ import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 import styles from './Body.module.scss';
 import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
-import { Dropdown, IDropdown, DropdownMenuItemType, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
+import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
+import { ComboBox, IComboBoxOption } from 'office-ui-fabric-react/lib/ComboBox';
+import Logo from './Logo/LogoInput';
 
 
 export interface IBodyProps {
@@ -13,10 +15,22 @@ export interface IBodyProps {
     function: IDropdownOption[];
     country: IDropdownOption[];
     segment: IDropdownOption[];
+    technologyPlatform: IDropdownOption[];
+    isTechnologyDisabled: boolean;
+    onTechnologyPlatformDropDownChange: (item: IDropdownOption) => void;
+    dataSource: IDropdownOption[];
+    isDataSourceDisabled: boolean;
+    onDataSourceDropDownChange: (item: IDropdownOption) => void;
+    whoCreatedTheSolution: IDropdownOption[];
+    isWhoCreatedTheSolutionDisabled: boolean;
+    onWhoCreatedTheSolutionDropDownChange: (item: IDropdownOption) => void;
+    handleImageChange: (event) => void;
+    imagePreviewUrl: any;
 }
 
 
 const body = (props: IBodyProps) => {
+
     return (
         <div className={styles.Body}>
             <div className={styles.BodyContainer}>
@@ -36,6 +50,15 @@ const body = (props: IBodyProps) => {
                         rows={5}
                         description={"Explain what problem is this solution aiming to solve"}
                     />
+                </div>
+                <div className={styles.Content}>
+                    <Label className={styles.Label} required={true}>Screenshot</Label>
+                    <div className={styles.Input}>
+                        <Logo
+                            imagePreviewUrl={props.imagePreviewUrl}
+                            handleImageChange={props.handleImageChange.bind(this)}
+                        />
+                    </div>
                 </div>
                 <div className={styles.Content}>
                     <Label className={styles.Label} required={true}>Country</Label>
@@ -118,6 +141,74 @@ const body = (props: IBodyProps) => {
                             This is the function where the solution is being used. Select from the dropdown list(multiple selection available)
                         </span>
                     </div>
+                </div>
+                <div className={styles.Content}>
+                    <Label className={styles.Label} required={true}>Technology Platform(s)</Label>
+                    <div className={styles.Input}>
+                        <Dropdown
+                            options={props.technologyPlatform}
+                            multiSelect
+                            placeHolder={"Select an Option"}
+                            onChanged={props.onTechnologyPlatformDropDownChange}
+                        />
+                        <span style={{ color: "#666666", fontSize: "11px" }}>
+                            Specify the technology platform on which the solution is built and/or specifying others if data source system is not in drop-down list.
+                        </span>
+                        <div className={styles.isActive}>
+                            <TextField
+                                placeholder={"Specify your technology platform"}
+                                disabled={!props.isTechnologyDisabled}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.Content}>
+                    <Label className={styles.Label} required={true}>Data Source(s)</Label>
+                    <div className={styles.Input}>
+                        <Dropdown
+                            options={props.dataSource}
+                            multiSelect
+                            placeHolder={"Select an Option"}
+                            onChanged={props.onDataSourceDropDownChange}
+                        />
+                        <span style={{ color: "#666666", fontSize: "11px" }}>
+                            Specify the data sources the solution uses by using the dropdown and/or specifying others by typing in directly in the text box if data source system is not in drop-down list.
+                        </span>
+                        <div className={styles.isActive}>
+                            <TextField
+                                placeholder={"Specify your Data Source"}
+                                disabled={!props.isDataSourceDisabled}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.Content}>
+                    <Label className={styles.Label} required={true}>Who created the solution?</Label>
+                    <div className={styles.Input}>
+                        <Dropdown
+                            options={props.whoCreatedTheSolution}
+                            multiSelect
+                            placeHolder={"Select an Option"}
+                            onChanged={props.onWhoCreatedTheSolutionDropDownChange}
+                        />
+                        <span style={{ color: "#666666", fontSize: "11px" }}>
+                            Please specify which team is developing the solution for you or if you are creating the solution yourself. Type in the team name if you cannot find it in the list.
+                        </span>
+                        <div className={styles.isActive}>
+                            <TextField
+                                placeholder={"Specify your solution"}
+                                disabled={!props.isWhoCreatedTheSolutionDisabled}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.Content}>
+                    <Label className={styles.Label} required={true}>Demo</Label>
+                    <TextField
+                        placeholder={"Give your solution a Name"}
+                        maxLength={255}
+                        className={styles.Input}
+                    />
                 </div>
             </div>
         </div>
