@@ -26,6 +26,15 @@ export interface IBodyProps {
     onWhoCreatedTheSolutionDropDownChange: (item: IDropdownOption) => void;
     handleImageChange: (event) => void;
     imagePreviewUrl: any;
+    itemTitleonBlur: (event: any) => void;
+    businessProblemOnBlur: (event: any) => void;
+    countryDropDownOnChange: (item: IDropdownOption) => void;
+    segmentOnChanged: (item: IDropdownOption) => void;
+    descriptionOnBlur: (event: any) => void;
+    featureOnBlur: (event: any) => void;
+    statusDropDownChange: (item: IDropdownOption) => void;
+    functionDropDownChange: (item: IDropdownOption) => void;
+    othersForTechPlatformOnBlur: (event: any) => void;
 }
 
 
@@ -40,6 +49,7 @@ const body = (props: IBodyProps) => {
                         placeholder={"Give your solution a Name"}
                         maxLength={255}
                         className={styles.Input}
+                        onBlur={props.itemTitleonBlur}
                     />
                 </div>
                 <div className={styles.Content}>
@@ -49,6 +59,7 @@ const body = (props: IBodyProps) => {
                         multiline={true}
                         rows={5}
                         description={"Explain what problem is this solution aiming to solve"}
+                        onBlur={props.businessProblemOnBlur}
                     />
                 </div>
                 <div className={styles.Content}>
@@ -67,6 +78,7 @@ const body = (props: IBodyProps) => {
                             options={props.country}
                             multiSelect
                             placeHolder={"Select an Option"}
+                            onChanged={props.countryDropDownOnChange}
                         />
                         <span style={{ color: "#666666", fontSize: "11px" }}>
                             Specify the country where the solution has been used
@@ -80,6 +92,7 @@ const body = (props: IBodyProps) => {
                             options={props.segment}
                             multiSelect
                             placeHolder={"Select an Option"}
+                            onChanged={props.segmentOnChanged}
                         />
                         <span style={{ color: "#666666", fontSize: "11px" }}>
                             Specify the Segment where the solution has been used
@@ -92,6 +105,7 @@ const body = (props: IBodyProps) => {
                         className={styles.Input}
                         multiline={true}
                         rows={5}
+                        onBlur={props.descriptionOnBlur}
                     />
                 </div>
                 <div className={styles.Content}>
@@ -101,6 +115,7 @@ const body = (props: IBodyProps) => {
                         multiline={true}
                         rows={5}
                         description={"Add Key Features in separate lines"}
+                        onBlur={props.featureOnBlur}
                     />
                 </div>
                 <div className={styles.Content}>
@@ -126,6 +141,7 @@ const body = (props: IBodyProps) => {
                         <Dropdown
                             options={props.status}
                             placeHolder={"Select an Option"}
+                            onChanged={props.statusDropDownChange}
                         />
                     </div>
                 </div>
@@ -136,6 +152,7 @@ const body = (props: IBodyProps) => {
                             options={props.function}
                             multiSelect
                             placeHolder={"Select an Option"}
+                            onChanged={props.functionDropDownChange}
                         />
                         <span style={{ color: "#666666", fontSize: "11px" }}>
                             This is the function where the solution is being used. Select from the dropdown list(multiple selection available)
@@ -158,6 +175,7 @@ const body = (props: IBodyProps) => {
                             <TextField
                                 placeholder={"Specify your technology platform"}
                                 disabled={!props.isTechnologyDisabled}
+                                onBlur={props.othersForTechPlatformOnBlur}
                             />
                         </div>
                     </div>
@@ -202,12 +220,13 @@ const body = (props: IBodyProps) => {
                         </div>
                     </div>
                 </div>
-                <div className={styles.Content}>
+                <div className={styles.Content} style={{ marginBottom: "10px" }}>
                     <Label className={styles.Label} required={true}>Demo</Label>
                     <TextField
                         placeholder={"Give your solution a Name"}
                         maxLength={255}
                         className={styles.Input}
+                        description={"Add here a video of a demo of the solution. Upload video in Office 365 channel (you can access video channel at the following link https://team.effem.com/portals/hub/_layouts/15/PointPublishing.aspx?app=video&p=c&chid=2f3aa33d-a62e-46bd-946f-cbdbf516d107&s=0&t=pfb) and add embed code here. NOTE: you can upload max 1 video"}
                     />
                 </div>
             </div>

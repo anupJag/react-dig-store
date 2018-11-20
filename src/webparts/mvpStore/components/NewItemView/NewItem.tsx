@@ -2,37 +2,15 @@ import * as React from 'react';
 import { Dialog, DialogFooter, DialogType, IDialogProps, IDialogStyles } from 'office-ui-fabric-react/lib/Dialog';
 import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import FormBody from './Body/Body';
+import { escape, uniq, findIndex } from '@microsoft/sp-lodash-subset';
 import styles from './NewItem.module.scss';
 import pnp, { Web } from 'sp-pnp-js';
 import { FieldName } from '../IMvpStoreProps';
 import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
 import { IComboBoxOption } from 'office-ui-fabric-react/lib/ComboBox';
+import { INewItemProps, INewItemState, INewItemData, IMultiData } from './INewItem';
 
-
-export interface INewItemProps {
-    hideDialog: boolean;
-    onDismissCalled: () => void;
-    context: any;
-    siteURL: any;
-    listGUID: string;
-}
-
-export interface INewItemState {
-    Status: IDropdownOption[];
-    TechnologyPlatform: IDropdownOption[];
-    DataSource: IDropdownOption[];
-    Segment: IDropdownOption[];
-    WhoCreatedTheSolution: IDropdownOption[];
-    Country: IDropdownOption[];
-    Function: IDropdownOption[];
-    showSpinner: boolean;
-    isTechnologyDisabled: boolean;
-    isDataSourceDisabled: boolean;
-    isWhoCreatedTheSolutionDisabled: boolean;
-    file: any;
-    imagePreviewUrl: any;
-}
 
 export default class NewItem extends React.Component<INewItemProps, INewItemState>{
 
@@ -56,7 +34,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             isDataSourceDisabled: false,
             isWhoCreatedTheSolutionDisabled: false,
             file: '',
-            imagePreviewUrl: ''
+            imagePreviewUrl: '',
+            newItemData: undefined
         };
     }
 
@@ -315,11 +294,49 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
     }
 
     protected onTechnologyPlatformChangeHandler = (item: IDropdownOption) => {
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+        let tempTechnologyPlatform: string[];
+
+        if (tempItemData) {
+            tempTechnologyPlatform = (tempItemData[FieldName.TechnologyPlatform] ? tempItemData[FieldName.TechnologyPlatform] : []);
+        }
+        else {
+            tempTechnologyPlatform = [];
+        }
+
+        if (item.selected) {
+            if (item.key === this._others) {
+                tempTechnologyPlatform.push(`${item.key as string}#$*`);
+            }
+            else {
+                tempTechnologyPlatform.push(item.key as string);
+            }
+
+        }
+        else {
+            if (item.key === this._others) {
+                tempTechnologyPlatform.splice(findIndex(tempTechnologyPlatform, el => el.toLowerCase().indexOf('#$*'.toLowerCase()) > 0));
+            }
+            else {
+                tempTechnologyPlatform.splice(findIndex(tempTechnologyPlatform, el => el === item.key as string), 1);
+            }
+        }
+
+        tempItemData[FieldName.TechnologyPlatform] = tempTechnologyPlatform;
+
+
         if (item.key === this._others) {
             this.setState({
-                isTechnologyDisabled: true
+                isTechnologyDisabled: true,
+                newItemData: tempItemData
             });
         }
+        else {
+            this.setState({
+                newItemData: tempItemData
+            });
+        }
+
     }
 
     protected onDataSourceChangeHandler = (item: IDropdownOption) => {
@@ -336,6 +353,156 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                 isWhoCreatedTheSolutionDisabled: true
             });
         }
+    }
+
+    protected onItemTitleBlurHandler = (event: any) => {
+        let itemData: INewItemData = { ...this.state.newItemData };
+        const tempItemTitle = escape(event.target.value).trim();
+        itemData[FieldName.SolutionName] = tempItemTitle;
+        this.setState({
+            newItemData: itemData
+        });
+    }
+
+    protected onBusinessProblemBlurHandler = (event: any) => {
+        let itemData: INewItemData = { ...this.state.newItemData };
+        const tempItemTitle = escape(event.target.value).trim();
+        itemData[FieldName.BusinessProblem] = tempItemTitle;
+        this.setState({
+            newItemData: itemData
+        });
+    }
+
+    protected onCountryDropDownChangeHandler = (item: IDropdownOption): void => {
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+        let countrySelectedData: IMultiData = tempItemData["CountryId"];
+        let resultSet: any[];
+
+        if (countrySelectedData) {
+            resultSet = (countrySelectedData["results"] ? countrySelectedData["results"] : []);
+        }
+        else {
+            resultSet = [];
+        }
+
+        if (item.selected) {
+            resultSet.push(parseInt(item.key as string, 0));
+        }
+        else {
+            let findItem = findIndex(resultSet, el => el === parseInt(item.key as string, 0));
+            resultSet.splice(findItem, 1);
+        }
+
+        countrySelectedData = { results: [...resultSet] };
+
+        tempItemData["CountryId"] = countrySelectedData;
+
+        this.setState({
+            newItemData: tempItemData
+        });
+
+
+    }
+
+    protected onSegmentDropDownChangedHandler = (item: IDropdownOption): void => {
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+        let tempSegments: string[];
+
+        if (tempItemData) {
+            tempSegments = (tempItemData[FieldName.Segment] ? tempItemData[FieldName.Segment] : []);
+        }
+        else {
+            tempSegments = [];
+        }
+
+        if (item.selected) {
+            tempSegments.push(item.key as string);
+        }
+        else {
+            tempSegments.splice(findIndex(tempSegments, el => el === item.key as string), 1);
+        }
+
+        tempItemData[FieldName.Segment] = tempSegments;
+
+        this.setState({
+            newItemData: tempItemData
+        });
+    }
+
+    protected onDescriptionBlurHandler = (event: any) => {
+        let itemData: INewItemData = { ...this.state.newItemData };
+        const tempDescription = escape(event.target.value).trim();
+        itemData[FieldName.Description] = tempDescription;
+        this.setState({
+            newItemData: itemData
+        });
+    }
+
+    protected onFeatureBlurHandler = (event: any) => {
+        let itemData: INewItemData = { ...this.state.newItemData };
+        const tempFeature = escape(event.target.value).trim();
+        itemData[FieldName.Features] = tempFeature;
+        this.setState({
+            newItemData: itemData
+        });
+    }
+
+    protected onStatusDropDownChangeHandler = (item: IDropdownOption): void => {
+        let itemData: INewItemData = { ...this.state.newItemData };
+        itemData[FieldName.Status] = item.key as string;
+
+        this.setState({
+            newItemData: itemData
+        });
+    }
+
+    protected onFunctionDropDownChangeHandler = (item: IDropdownOption): void => {
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+        let tempFunction: string[];
+
+        if (tempItemData) {
+            tempFunction = (tempItemData[FieldName.Function] ? tempItemData[FieldName.Function] : []);
+        }
+        else {
+            tempFunction = [];
+        }
+
+        if (item.selected) {
+            tempFunction.push(item.key as string);
+        }
+        else {
+            tempFunction.splice(findIndex(tempFunction, el => el === item.key as string), 1);
+        }
+
+        tempItemData[FieldName.Function] = tempFunction;
+
+        this.setState({
+            newItemData: tempItemData
+        });
+    }
+
+    protected othersForTechPlatformOnBlurHandler = (event : any) : void => {
+        let tempDateEntered : string = escape(event.target.value).trim();
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+
+        let tempTechnologyPlatform: string[];
+
+        if (tempItemData) {
+            tempTechnologyPlatform = (tempItemData[FieldName.TechnologyPlatform] ? tempItemData[FieldName.TechnologyPlatform] : []);
+        }
+
+        let index = findIndex(tempTechnologyPlatform, el => el.toLowerCase().indexOf("#$*") >= 0);
+
+        if(index >= 0){
+            tempTechnologyPlatform[index] = `${tempDateEntered}#$*`;
+        }
+
+        tempItemData[FieldName.TechnologyPlatform] = tempTechnologyPlatform;
+
+        this.setState({
+            newItemData : tempItemData
+        });
+
     }
 
     public render(): React.ReactElement<INewItemProps> {
@@ -371,6 +538,15 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                         onWhoCreatedTheSolutionDropDownChange={this.onWhoCreatedTheSolutionChangeHandler.bind(this)}
                         imagePreviewUrl={this.state.imagePreviewUrl}
                         handleImageChange={this.handleImageChangeHandler.bind(this)}
+                        itemTitleonBlur={this.onItemTitleBlurHandler.bind(this)}
+                        businessProblemOnBlur={this.onBusinessProblemBlurHandler.bind(this)}
+                        countryDropDownOnChange={this.onCountryDropDownChangeHandler.bind(this)}
+                        segmentOnChanged={this.onSegmentDropDownChangedHandler.bind(this)}
+                        descriptionOnBlur={this.onDescriptionBlurHandler.bind(this)}
+                        featureOnBlur={this.onFeatureBlurHandler.bind(this)}
+                        statusDropDownChange={this.onStatusDropDownChangeHandler.bind(this)}
+                        functionDropDownChange={this.onFunctionDropDownChangeHandler.bind(this)}
+                        othersForTechPlatformOnBlur={this.othersForTechPlatformOnBlurHandler.bind(this)}
                     />
                 </div>
                 <div>
