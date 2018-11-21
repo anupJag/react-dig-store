@@ -35,6 +35,7 @@ export interface IBodyProps {
     statusDropDownChange: (item: IDropdownOption) => void;
     functionDropDownChange: (item: IDropdownOption) => void;
     othersForTechPlatformOnBlur: (event: any) => void;
+    othersTechPlatformValue: string;
 }
 
 
@@ -176,6 +177,7 @@ const body = (props: IBodyProps) => {
                                 placeholder={"Specify your technology platform"}
                                 disabled={!props.isTechnologyDisabled}
                                 onBlur={props.othersForTechPlatformOnBlur}
+                                value={props.othersTechPlatformValue}
                             />
                         </div>
                     </div>

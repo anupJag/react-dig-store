@@ -23,6 +23,7 @@ export interface INewItemState {
     file: any;
     imagePreviewUrl: any;
     newItemData: INewItemData;
+    othersTechValue: string;
 }
 
 export interface INewItemData {

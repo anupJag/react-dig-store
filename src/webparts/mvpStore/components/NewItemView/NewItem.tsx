@@ -35,7 +35,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             isWhoCreatedTheSolutionDisabled: false,
             file: '',
             imagePreviewUrl: '',
-            newItemData: undefined
+            newItemData: undefined,
+            othersTechValue: ''
         };
     }
 
@@ -306,7 +307,12 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
 
         if (item.selected) {
             if (item.key === this._others) {
-                tempTechnologyPlatform.push(`${item.key as string}#$*`);
+                if (!this.state.othersTechValue) {
+                    tempTechnologyPlatform.push(`${item.key as string}#$*`);
+                }
+                else{
+                    tempTechnologyPlatform.push(`${this.state.othersTechValue}#$*`);
+                }
             }
             else {
                 tempTechnologyPlatform.push(item.key as string);
@@ -481,8 +487,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         });
     }
 
-    protected othersForTechPlatformOnBlurHandler = (event : any) : void => {
-        let tempDateEntered : string = escape(event.target.value).trim();
+    protected othersForTechPlatformOnBlurHandler = (event: any): void => {
+        let tempDateEntered: string = escape(event.target.value).trim();
         let tempItemData: INewItemData = { ...this.state.newItemData };
 
         let tempTechnologyPlatform: string[];
@@ -493,14 +499,15 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
 
         let index = findIndex(tempTechnologyPlatform, el => el.toLowerCase().indexOf("#$*") >= 0);
 
-        if(index >= 0){
+        if (index >= 0) {
             tempTechnologyPlatform[index] = `${tempDateEntered}#$*`;
         }
 
         tempItemData[FieldName.TechnologyPlatform] = tempTechnologyPlatform;
 
         this.setState({
-            newItemData : tempItemData
+            newItemData: tempItemData,
+            othersTechValue: tempDateEntered
         });
 
     }
@@ -547,6 +554,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                         statusDropDownChange={this.onStatusDropDownChangeHandler.bind(this)}
                         functionDropDownChange={this.onFunctionDropDownChangeHandler.bind(this)}
                         othersForTechPlatformOnBlur={this.othersForTechPlatformOnBlurHandler.bind(this)}
+                        othersTechPlatformValue={this.state.othersTechValue}
                     />
                 </div>
                 <div>
