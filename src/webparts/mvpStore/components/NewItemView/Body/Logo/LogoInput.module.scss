@@ -41,6 +41,15 @@
         top: calc(100% - 14px);
         right: calc(100% - 30px);
 
+
+        .FileUploadError{
+            position: absolute;
+            top: calc(100% - 7px);
+            color: red;
+            width: max-content;
+            height: max-content;
+        }
+
         .FileInputContainer{
             width: 25px;
             height: 25px;

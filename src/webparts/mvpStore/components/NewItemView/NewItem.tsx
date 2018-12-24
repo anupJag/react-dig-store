@@ -9,6 +9,7 @@ import { FieldName } from '../IMvpStoreProps';
 import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
 import { IComboBoxOption } from 'office-ui-fabric-react/lib/ComboBox';
+import * as strings from 'MvpStoreWebPartStrings';
 import { INewItemProps, INewItemState, INewItemData, IMultiData } from './INewItem';
 
 
@@ -36,7 +37,9 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             file: '',
             imagePreviewUrl: '',
             newItemData: undefined,
-            othersTechValue: ''
+            othersTechValue: '',
+            fileUploadError: false,
+            errorMessage: ''
         };
     }
 
@@ -48,6 +51,9 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         });
     }
 
+    /**
+     * Method to get all data using batch request for faster load time
+     */
     protected getAllChoiceFieldData = async () => {
         let batch = pnp.sp.createBatch();
 
@@ -280,18 +286,53 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         console.log('Items:', items);
     }
 
-    private handleImageChangeHandler = (event): void => {
+    private checkIfFileExists = (fileName: string): boolean => {
+        const url = `https://team.effem.com/sites/digitalmarssolutionstore/SiteAssets/Lists/MVP%20store/NewForm/${fileName}`;
+        var http = new XMLHttpRequest();
+        http.open('HEAD', url, false);
+        http.send();
+        return http.status === 200;
+    }
+
+    private handleImageChangeHandler = async (event) => {
+
         let reader = new FileReader();
-        let file = event.target.files[0];
+        let file: File = event.target.files[0];
+
+        if (!(/\.(jpe?g|tiff|png)$/i).test(file.name)) {
+            this.setState({
+                fileUploadError: true,
+                file: undefined,
+                imagePreviewUrl: null,
+                errorMessage: strings.ErrorFileType
+            });
+
+            throw new Error("File Type Error");
+        }
+
+        if (this.checkIfFileExists(file.name)) {
+            this.setState({
+                fileUploadError: true,
+                file: undefined,
+                imagePreviewUrl: null,
+                errorMessage: strings.ErrorDuplicateFile
+            });
+
+            throw new Error("File Exisits");
+        }
 
         reader.onloadend = () => {
             this.setState({
+                fileUploadError: false,
+                errorMessage: '',
                 file: file,
                 imagePreviewUrl: reader.result
             });
         };
 
         reader.readAsDataURL(file);
+
+        // pnp.sp.web.getFolderByServerRelativeUrl('/sites/digitalmarssolutionstore/SiteAssets/Lists/MVP%20store/NewForm/').files.add(file.name, file, false).then((data) => console.log(data));
     }
 
     protected onTechnologyPlatformChangeHandler = (item: IDropdownOption) => {
@@ -310,7 +351,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                 if (!this.state.othersTechValue) {
                     tempTechnologyPlatform.push(`${item.key as string}#$*`);
                 }
-                else{
+                else {
                     tempTechnologyPlatform.push(`${this.state.othersTechValue}#$*`);
                 }
             }
@@ -512,7 +553,41 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
 
     }
 
+
+    protected saveDate = async () => {
+        //Here We need to upload the image file to sharepoint and then
+
+        this.setState({
+            showSpinner : true
+        });
+
+        const { file, othersTechValue } = this.state;
+
+        const imgUpldProps = await pnp.sp.web.getFolderByServerRelativeUrl('/sites/digitalmarssolutionstore/SiteAssets/Lists/MVP%20store/NewForm/').files.add(file.name, file, false).then(data => data);
+
+        //Refine Data
+        let dataToBeAdded: INewItemData = { ...this.state.newItemData };
+
+        //Update Image
+        dataToBeAdded["Images"] = `<div><p><img alt="${file.name}" src="${imgUpldProps.data.ServerRelativeUrl}"/>&#160;</p></div>`;
+
+        //Update Technology_x0020_platform field
+        const tempTechPlatform : string[] = [...this.state.newItemData["Technology_x0020_platform"]];
+        let index = findIndex(tempTechPlatform, el => el.toLowerCase().indexOf("#$*") >= 0);
+
+        if (index >= 0 && othersTechValue) {
+            tempTechPlatform[index] = othersTechValue;
+        }
+
+        dataToBeAdded["Technology_x0020_platform"] = tempTechPlatform;
+
+        console.log(dataToBeAdded);
+
+    }
+
     public render(): React.ReactElement<INewItemProps> {
+
+        const hideSpinner: React.CSSProperties = !this.state.showSpinner ? { display: "none" } : null;
 
         return (
             <Dialog
@@ -529,6 +604,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                 <div>
                     <FormBody
                         context={this.props.context}
+                        errorMessage={this.state.errorMessage}
+                        showFileUploadError={this.state.fileUploadError}
                         _getPeoplePickerItems={this._getPeoplePickerItemsHandler.bind(this)}
                         status={this.state.Status && this.state.Status.length > 0 ? this.state.Status : []}
                         function={this.state.Function && this.state.Function.length > 0 ? this.state.Function : []}
@@ -558,8 +635,11 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                     />
                 </div>
                 <div>
+                    <div className={styles.ShowSpinner} style={hideSpinner}>
+                        <Spinner label={"De-registering your request"} size={SpinnerSize.medium} />
+                    </div>
                     <DialogFooter>
-                        <PrimaryButton onClick={this.props.onDismissCalled} text="Save" />
+                        <PrimaryButton onClick={this.saveDate} text="Save" />
                         <DefaultButton onClick={this.props.onDismissCalled} text="Cancel" />
                     </DialogFooter>
                 </div>

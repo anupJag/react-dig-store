@@ -10,6 +10,7 @@ import Logo from './Logo/LogoInput';
 
 export interface IBodyProps {
     context: any;
+    showFileUploadError: boolean;
     _getPeoplePickerItems: (items: any[]) => void;
     status: IDropdownOption[];
     function: IDropdownOption[];
@@ -36,6 +37,7 @@ export interface IBodyProps {
     functionDropDownChange: (item: IDropdownOption) => void;
     othersForTechPlatformOnBlur: (event: any) => void;
     othersTechPlatformValue: string;
+    errorMessage: string;
 }
 
 
@@ -63,14 +65,16 @@ const body = (props: IBodyProps) => {
                         onBlur={props.businessProblemOnBlur}
                     />
                 </div>
-                <div className={styles.Content}>
+                <div className={styles.Content} style={{paddingBottom : "10px"}}>
                     <Label className={styles.Label} required={true}>Screenshot</Label>
                     <div className={styles.Input}>
                         <Logo
                             imagePreviewUrl={props.imagePreviewUrl}
                             handleImageChange={props.handleImageChange.bind(this)}
+                            showError={props.showFileUploadError}
+                            errorMessage={props.errorMessage}
                         />
-                    </div>
+                    </div>           
                 </div>
                 <div className={styles.Content}>
                     <Label className={styles.Label} required={true}>Country</Label>

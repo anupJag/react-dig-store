@@ -3,4 +3,9 @@
 .Dialog{
     height: 80vh;
     width: 60vw;
+
+    .ShowSpinner{
+        display: block;
+    }
+
 }

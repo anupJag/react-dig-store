@@ -24,6 +24,8 @@ export interface INewItemState {
     imagePreviewUrl: any;
     newItemData: INewItemData;
     othersTechValue: string;
+    fileUploadError : boolean;
+    errorMessage : string
 }
 
 export interface INewItemData {

@@ -24,7 +24,7 @@ const infoCardDetail = (props: IInfoCardDetailsProps) => {
     };
 
     return (
-        <DocumentCard className={styles.DocumentCard} onClickHref={props.onClickRefLink}>
+        <DocumentCard className={styles.DocumentCard} onClickHref={props.onClickRefLink} >
             <div
                 className={styles.ImageContainer}
             >

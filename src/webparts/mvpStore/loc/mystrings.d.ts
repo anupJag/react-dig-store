@@ -3,6 +3,8 @@ declare interface IMvpStoreWebPartStrings {
   BasicGroupName: string;
   DescriptionFieldLabel: string;
 
+  ErrorDuplicateFile: string;
+  ErrorFileType: string;
 }
 
 declare module 'MvpStoreWebPartStrings' {

@@ -3,10 +3,12 @@ import styles from './LogoInput.module.scss';
 
 export interface ILogoInput {
     imagePreviewUrl: any;
-    handleImageChange:(event) => void;
+    showError: boolean;
+    handleImageChange: (event) => void;
+    errorMessage: string;
 }
 
-const logoInput = (props : ILogoInput) => {
+const logoInput = (props: ILogoInput) => {
 
     let { imagePreviewUrl } = props;
     let imagePreview = null;
@@ -29,6 +31,12 @@ const logoInput = (props : ILogoInput) => {
                             onChange={props.handleImageChange} />
                     </label>
                 </div>
+                {
+                    props.showError ?
+                        <div className={styles.FileUploadError} >{props.errorMessage}</div>
+                        :
+                        null
+                }
             </div>
         </div>
     );
