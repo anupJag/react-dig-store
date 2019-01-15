@@ -37,6 +37,10 @@ export interface IBodyProps {
     functionDropDownChange: (item: IDropdownOption) => void;
     othersForTechPlatformOnBlur: (event: any) => void;
     othersTechPlatformValue: string;
+    othersDataSourceOnBlur: (event: any) => void;
+    othersDataSourceValue: string;
+    othersWhoCreatedSolutionOnBlur: (event: any) => void;
+    othersWhoCreatedSolutionValue: string;
     errorMessage: string;
 }
 
@@ -202,6 +206,8 @@ const body = (props: IBodyProps) => {
                             <TextField
                                 placeholder={"Specify your Data Source"}
                                 disabled={!props.isDataSourceDisabled}
+                                onBlur={props.othersDataSourceOnBlur}
+                                value={props.othersDataSourceValue}
                             />
                         </div>
                     </div>
@@ -222,6 +228,8 @@ const body = (props: IBodyProps) => {
                             <TextField
                                 placeholder={"Specify your solution"}
                                 disabled={!props.isWhoCreatedTheSolutionDisabled}
+                                onBlur={props.othersWhoCreatedSolutionOnBlur}
+                                value={props.othersWhoCreatedSolutionValue}
                             />
                         </div>
                     </div>

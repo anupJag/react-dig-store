@@ -38,6 +38,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             imagePreviewUrl: '',
             newItemData: undefined,
             othersTechValue: '',
+            othersDataSourceValue: '',
+            othersWhoCreatedSolutionValue: '',
             fileUploadError: false,
             errorMessage: ''
         };
@@ -283,7 +285,29 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
     }
 
     private _getPeoplePickerItemsHandler(items: any[]) {
-        console.log('Items:', items);
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+        let peoplePickerData: IMultiData = tempItemData["Product_x0020_Owner"];
+
+        let resultSet: any[] = [];
+
+        if (items && items.length > 0) {
+            for (let i = 0; i < items.length; i++) {
+                resultSet.push(parseInt(items[i].id, 10));
+            }
+
+            resultSet = uniq(resultSet);
+        }
+        else {
+            resultSet.length = 0;
+        }
+
+        peoplePickerData = { results: [...resultSet] };
+
+        tempItemData["Product_x0020_Owner"] = peoplePickerData;
+
+        this.setState({
+            newItemData: tempItemData
+        });
     }
 
     private checkIfFileExists = (fileName: string): boolean => {
@@ -387,17 +411,101 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
     }
 
     protected onDataSourceChangeHandler = (item: IDropdownOption) => {
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+        let tempDataSource: string[];
+
+        if (tempItemData) {
+            tempDataSource = (tempItemData[FieldName.DataSource] ? tempItemData[FieldName.DataSource] : []);
+        }
+        else {
+            tempDataSource = [];
+        }
+
+        if (item.selected) {
+            if (item.key === this._others) {
+                if (!this.state.othersDataSourceValue) {
+                    tempDataSource.push(`${item.key as string}#$*`);
+                }
+                else {
+                    tempDataSource.push(`${this.state.othersDataSourceValue}#$*`);
+                }
+            }
+            else {
+                tempDataSource.push(item.key as string);
+            }
+
+        }
+        else {
+            if (item.key === this._others) {
+                tempDataSource.splice(findIndex(tempDataSource, el => el.toLowerCase().indexOf('#$*'.toLowerCase()) > 0));
+            }
+            else {
+                tempDataSource.splice(findIndex(tempDataSource, el => el === item.key as string), 1);
+            }
+        }
+
+        tempItemData[FieldName.DataSource] = tempDataSource;
+
+
         if (item.key === this._others) {
             this.setState({
-                isDataSourceDisabled: true
+                isDataSourceDisabled: true,
+                newItemData: tempItemData
+            });
+        }
+        else {
+            this.setState({
+                newItemData: tempItemData
             });
         }
     }
 
     protected onWhoCreatedTheSolutionChangeHandler = (item: IDropdownOption) => {
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+        let tempWhoCreatedSolution: string[];
+
+        if (tempItemData) {
+            tempWhoCreatedSolution = (tempItemData[FieldName.WhoCreatedTheSolution] ? tempItemData[FieldName.WhoCreatedTheSolution] : []);
+        }
+        else {
+            tempWhoCreatedSolution = [];
+        }
+
+        if (item.selected) {
+            if (item.key === this._others) {
+                if (!this.state.othersWhoCreatedSolutionValue) {
+                    tempWhoCreatedSolution.push(`${item.key as string}#$*`);
+                }
+                else {
+                    tempWhoCreatedSolution.push(`${this.state.othersWhoCreatedSolutionValue}#$*`);
+                }
+            }
+            else {
+                tempWhoCreatedSolution.push(item.key as string);
+            }
+
+        }
+        else {
+            if (item.key === this._others) {
+                tempWhoCreatedSolution.splice(findIndex(tempWhoCreatedSolution, el => el.toLowerCase().indexOf('#$*'.toLowerCase()) > 0));
+            }
+            else {
+                tempWhoCreatedSolution.splice(findIndex(tempWhoCreatedSolution, el => el === item.key as string), 1);
+            }
+        }
+
+        tempItemData[FieldName.WhoCreatedTheSolution] = tempWhoCreatedSolution;
+
+
         if (item.key === this._others) {
             this.setState({
-                isWhoCreatedTheSolutionDisabled: true
+                isWhoCreatedTheSolutionDisabled: true,
+                newItemData: tempItemData
+            });
+        }
+        else {
+            this.setState({
+                newItemData: tempItemData
             });
         }
     }
@@ -553,15 +661,64 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
 
     }
 
+    protected othersDataSourceOnBlurHandler = (event: any): void => {
+        let tempDateEntered: string = escape(event.target.value).trim();
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+
+        let tempDataSource: string[];
+
+        if (tempItemData) {
+            tempDataSource = (tempItemData[FieldName.DataSource] ? tempItemData[FieldName.DataSource] : []);
+        }
+
+        let index = findIndex(tempDataSource, el => el.toLowerCase().indexOf("#$*") >= 0);
+
+        if (index >= 0) {
+            tempDataSource[index] = `${tempDateEntered}#$*`;
+        }
+
+        tempItemData[FieldName.DataSource] = tempDataSource;
+
+        this.setState({
+            newItemData: tempItemData,
+            othersDataSourceValue: tempDateEntered
+        });
+
+    }
+
+    protected othersWhoCreatedSolutionOnBlurHandler = (event: any): void => {
+        let tempDateEntered: string = escape(event.target.value).trim();
+        let tempItemData: INewItemData = { ...this.state.newItemData };
+
+        let tempWhoCreatedSolution: string[];
+
+        if (tempItemData) {
+            tempWhoCreatedSolution = (tempItemData[FieldName.WhoCreatedTheSolution] ? tempItemData[FieldName.WhoCreatedTheSolution] : []);
+        }
+
+        let index = findIndex(tempWhoCreatedSolution, el => el.toLowerCase().indexOf("#$*") >= 0);
+
+        if (index >= 0) {
+            tempWhoCreatedSolution[index] = `${tempDateEntered}#$*`;
+        }
+
+        tempItemData[FieldName.WhoCreatedTheSolution] = tempWhoCreatedSolution;
+
+        this.setState({
+            newItemData: tempItemData,
+            othersWhoCreatedSolutionValue: tempDateEntered
+        });
+
+    }
 
     protected saveDate = async () => {
         //Here We need to upload the image file to sharepoint and then
 
         this.setState({
-            showSpinner : true
+            showSpinner: true
         });
 
-        const { file, othersTechValue } = this.state;
+        const { file, othersTechValue, othersDataSourceValue, othersWhoCreatedSolutionValue } = this.state;
 
         const imgUpldProps = await pnp.sp.web.getFolderByServerRelativeUrl('/sites/digitalmarssolutionstore/SiteAssets/Lists/MVP%20store/NewForm/').files.add(file.name, file, false).then(data => data);
 
@@ -572,14 +729,35 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         dataToBeAdded["Images"] = `<div><p><img alt="${file.name}" src="${imgUpldProps.data.ServerRelativeUrl}"/>&#160;</p></div>`;
 
         //Update Technology_x0020_platform field
-        const tempTechPlatform : string[] = [...this.state.newItemData["Technology_x0020_platform"]];
+        const tempTechPlatform: string[] = [...this.state.newItemData[FieldName.TechnologyPlatform]];
         let index = findIndex(tempTechPlatform, el => el.toLowerCase().indexOf("#$*") >= 0);
 
         if (index >= 0 && othersTechValue) {
             tempTechPlatform[index] = othersTechValue;
         }
 
-        dataToBeAdded["Technology_x0020_platform"] = tempTechPlatform;
+        dataToBeAdded[FieldName.TechnologyPlatform] = tempTechPlatform;
+
+        //Update Data_x0020_Source field
+        const tempDataSource: string[] = [...this.state.newItemData[FieldName.DataSource]];
+        let indexDataSource = findIndex(tempDataSource, el => el.toLowerCase().indexOf("#$*") >= 0);
+
+        if (index >= 0 && othersDataSourceValue) {
+            tempDataSource[indexDataSource] = othersDataSourceValue;
+        }
+
+        dataToBeAdded[FieldName.DataSource] = tempDataSource;
+
+        //Update Who_Created_Solution field
+        const tempWhoCreatedSolution: string[] = [...this.state.newItemData[FieldName.WhoCreatedTheSolution]];
+        let indexWhoCreatedSolution = findIndex(tempWhoCreatedSolution, el => el.toLowerCase().indexOf("#$*") >= 0);
+
+        if (index >= 0 && othersWhoCreatedSolutionValue) {
+            tempWhoCreatedSolution[indexWhoCreatedSolution] = othersWhoCreatedSolutionValue;
+        }
+
+        dataToBeAdded[FieldName.WhoCreatedTheSolution] = tempWhoCreatedSolution;
+
 
         console.log(dataToBeAdded);
 
@@ -588,6 +766,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
     public render(): React.ReactElement<INewItemProps> {
 
         const hideSpinner: React.CSSProperties = !this.state.showSpinner ? { display: "none" } : null;
+        const enableSaveButton: boolean = this.state.newItemData && this.state.newItemData[FieldName.BusinessProblem] && this.state.newItemData["CountryId"] && this.state.newItemData[FieldName.DataSource] && this.state.newItemData[FieldName.Description] && this.state.newItemData[FieldName.Features] && this.state.newItemData[FieldName.Function] && this.state.newItemData[FieldName.ProductOwner] && this.state.file && this.state.newItemData[FieldName.Segment] && this.state.newItemData[FieldName.SolutionName] && this.state.newItemData[FieldName.Status] && this.state.newItemData[FieldName.TechnologyPlatform] && this.state.newItemData[FieldName.WhoCreatedTheSolution] ? true : false;
 
         return (
             <Dialog
@@ -632,15 +811,25 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                         functionDropDownChange={this.onFunctionDropDownChangeHandler.bind(this)}
                         othersForTechPlatformOnBlur={this.othersForTechPlatformOnBlurHandler.bind(this)}
                         othersTechPlatformValue={this.state.othersTechValue}
+                        othersDataSourceOnBlur={this.othersDataSourceOnBlurHandler.bind(this)}
+                        othersDataSourceValue={this.state.othersDataSourceValue}
+                        othersWhoCreatedSolutionOnBlur={this.othersWhoCreatedSolutionOnBlurHandler.bind(this)}
+                        othersWhoCreatedSolutionValue={this.state.othersWhoCreatedSolutionValue}
                     />
                 </div>
                 <div>
-                    <div className={styles.ShowSpinner} style={hideSpinner}>
-                        <Spinner label={"De-registering your request"} size={SpinnerSize.medium} />
-                    </div>
                     <DialogFooter>
-                        <PrimaryButton onClick={this.saveDate} text="Save" />
-                        <DefaultButton onClick={this.props.onDismissCalled} text="Cancel" />
+                        <div style={{display: "flex", justifyContent: "flex-end"}}>
+                            <div className={styles.ShowSpinner} style={hideSpinner}>
+                                <Spinner label={""} size={SpinnerSize.medium} />
+                            </div>
+                            <PrimaryButton
+                                onClick={this.saveDate}
+                                disabled={!enableSaveButton}
+                                text="Save"
+                            />
+                            <DefaultButton onClick={this.props.onDismissCalled} text="Cancel" />
+                        </div>
                     </DialogFooter>
                 </div>
             </Dialog>

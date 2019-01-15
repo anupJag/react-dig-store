@@ -24,8 +24,10 @@ export interface INewItemState {
     imagePreviewUrl: any;
     newItemData: INewItemData;
     othersTechValue: string;
+    othersDataSourceValue : string;
+    othersWhoCreatedSolutionValue : string;
     fileUploadError : boolean;
-    errorMessage : string
+    errorMessage : string;
 }
 
 export interface INewItemData {
