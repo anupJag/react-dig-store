@@ -5,6 +5,7 @@ declare interface IMvpStoreWebPartStrings {
 
   ErrorDuplicateFile: string;
   ErrorFileType: string;
+  ErrorFileSize: string;
 }
 
 declare module 'MvpStoreWebPartStrings' {

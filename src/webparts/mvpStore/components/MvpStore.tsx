@@ -9,6 +9,7 @@ import { Placeholder } from "@pnp/spfx-controls-react/lib/Placeholder";
 import { IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
 import { IconType } from 'office-ui-fabric-react/lib/Icon';
 import NewItem from './NewItemView/NewItem';
+import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
 
 
 export interface IMvpStoreState {
@@ -19,6 +20,7 @@ export interface IMvpStoreState {
   data: IMVPStoreData[];
   postCount: any;
   hideDialog: boolean;
+  showLoadingSpinner: boolean;
 }
 
 
@@ -38,7 +40,8 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
       mvpStoreData: [],
       data: [],
       postCount: "All",
-      hideDialog: true
+      hideDialog: true,
+      showLoadingSpinner: true
     };
   }
 
@@ -164,6 +167,10 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
    * Get all the data from MVP store ... Pending is handling paginated data
    */
   protected getMVPStoreData = async () => {
+    this.setState({
+      showLoadingSpinner: true
+    });
+
     let web = new Web(this.props.siteURL);
     let listGUID: string = this.props.list;
     let reg: RegExp = new RegExp(/<img\s[^>]*?src\s*=\s*['\"]([^'\"]*?)['\"][^>]*?>/);
@@ -197,7 +204,7 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
             Images: imageTag,
             Title: el["Title"],
             Target_x0020_User_x0020_Group: [...el["Target_x0020_User_x0020_Group"]],
-            ListItemUrl: `https://team.effem.com/sites/digitalmarssolutionstore/Lists/MVP%20store/DispForm.aspx?ID=${el["Id"]}`
+            ListItemUrl: `https://team.effem.com/sites/digitalmarssolutionstore/Lists/MVP%20store/DispForm.aspx?ID=${el["Id"]}&source=${window.location.href}`
           });
 
         });
@@ -206,7 +213,8 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
 
     this.setState({
       mvpStoreData: tempMvpStoreData,
-      data: tempMvpStoreData
+      data: tempMvpStoreData,
+      showLoadingSpinner: false
     });
 
   }
@@ -215,25 +223,44 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
     this.setState({
       hideDialog: false
     });
+
+    this.getMVPStoreData().then(() => console.log("Data Refreshed"));
+
   }
 
-  protected onDismissCalledHandler = (): void => {
+  protected onSaveButtonClickHandler = (): void => {
+    this.setState({
+      hideDialog: true
+    });
+
+    this.getMVPStoreData().then(() => console.log("Data Refreshed"));
+
+  }
+
+  protected onDismissCalledHandler = (type): void => {
     this.setState({
       hideDialog: true
     });
   }
 
   public render(): React.ReactElement<IMvpStoreProps> {
-    const showNewItem: JSX.Element = !this.state.hideDialog ? 
-    <NewItem
-      hideDialog={this.state.hideDialog}
-      onDismissCalled={this.onDismissCalledHandler.bind(this)}
-      context={this.props.context}
-      siteURL={this.props.siteURL}
-      listGUID={this.state.list}
-    />
-    :
-    null;
+    const showNewItem: JSX.Element = !this.state.hideDialog ?
+      <NewItem
+        hideDialog={this.state.hideDialog}
+        onDismissCalled={this.onDismissCalledHandler.bind(this)}
+        onSaveCalled={this.onSaveButtonClickHandler.bind(this)}
+        context={this.props.context}
+        siteURL={this.props.siteURL}
+        listGUID={this.state.list}
+      />
+      :
+      null;
+
+    const showSpinnerMain: JSX.Element = this.state.showLoadingSpinner ?
+      <div className={styles.showSpinner}>
+        <Spinner label={"Loading Data Please Wait"} size={SpinnerSize.large} />
+      </div> :
+      null;
     
     return (
       <div className={styles.mvpStore}>
@@ -241,12 +268,17 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
           this.state.list ?
             <div className={styles.container}>
               <div className={styles.mainView}>
-                <MainView
-                  CategoryType={this.state.selectedCategoryType}
-                  CardsData={(this.state.mvpStoreData && this.state.mvpStoreData.length > 0) ? this.state.mvpStoreData : []}
-                  PostCount={this.state.selectedCategoryType === "All" ? "All" : this.state.mvpStoreData.length}
-                  onAddButtonClick={this.onAddButtonClickHandler.bind(this)}
-                />
+                {
+                  !this.state.showLoadingSpinner ?
+                  <MainView
+                      CategoryType={this.state.selectedCategoryType}
+                      CardsData={(this.state.mvpStoreData && this.state.mvpStoreData.length > 0) ? this.state.mvpStoreData : []}
+                      PostCount={this.state.selectedCategoryType === "All" ? "All" : this.state.mvpStoreData.length}
+                      onAddButtonClick={this.onAddButtonClickHandler.bind(this)}
+                    /> 
+                    : 
+                    showSpinnerMain
+                }
                 {showNewItem}
               </div>
               <div className={styles.categoryView}>

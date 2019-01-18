@@ -10,12 +10,24 @@ import { PropertyFieldListPicker, PropertyFieldListPickerOrderBy } from '@pnp/sp
 import * as strings from 'MvpStoreWebPartStrings';
 import MvpStore from './components/MvpStore';
 import { IMvpStoreProps } from './components/IMvpStoreProps';
+import pnp from "sp-pnp-js";
 
 export interface IMvpStoreWebPartProps {
   list: string;
 }
 
 export default class MvpStoreWebPart extends BaseClientSideWebPart<IMvpStoreWebPartProps> {
+
+  public onInit(): Promise<void> {
+
+    return super.onInit().then(_ => {
+
+      pnp.setup({
+        spfxContext: this.context
+      });
+
+    });
+  }
 
   public render(): void {
     const element: React.ReactElement<IMvpStoreProps > = React.createElement(

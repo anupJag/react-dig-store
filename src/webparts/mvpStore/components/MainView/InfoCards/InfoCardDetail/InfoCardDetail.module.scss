@@ -3,25 +3,24 @@
 
 .DocumentCard{
     height: 300px;
-    width: 49%;
+    width: 100%;
     position: relative;
     cursor: pointer;
-    margin-bottom: 11px;
-    margin-left: 1px;
-    margin-right: 1px;
+    margin: 0 10px 10px 10px;
+    max-width: 46% !important;
 
     &:hover{
         outline: 1px solid #ccc;
     }
 
     .ImageContainer{
-        height: 78%;
+        height: 80%;
         width: 100%;
-        box-sizing: border-box;
+        box-sizing:content-box;
         border-bottom: 1px solid #ddd;
 
         .Image{
-            height: inherit;
+            height: 100%;
             width: 100%;
         }
     }
@@ -36,12 +35,13 @@
         box-sizing: border-box;
 
         .Function{
-            font-size: 16px;
+            font-size: 13px;
             font-family: inherit;
             font-weight: 400;
             font-style: normal;
+            box-sizing: content-box;
             color: $ms-color-themePrimary;
-            padding-bottom: 5px;
+            padding-bottom: 2px;
 
             span{
                 padding-right: 2px;
@@ -56,7 +56,7 @@
         }
 
         .Name{
-            font-size: 17px;
+            font-size: 14px;
             font-weight: 400;
             color: #111;
             line-height: 21px;

@@ -26,7 +26,7 @@ const header = (props: IHeaderProps) => {
                             }
                         }
                         onClick={props.onAddButtonClick}
-                    >Add</ActionButton>
+                    >ADD YOUR SOLUTION</ActionButton>
                 </div>
                 <div className={styles.Post}>{props.PostCount} Posts</div>
             </header>

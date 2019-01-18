@@ -4,7 +4,7 @@ import { DefaultButton, PrimaryButton } from 'office-ui-fabric-react/lib/Button'
 import FormBody from './Body/Body';
 import { escape, uniq, findIndex } from '@microsoft/sp-lodash-subset';
 import styles from './NewItem.module.scss';
-import pnp, { Web } from 'sp-pnp-js';
+import pnp, { Web, ItemAddResult } from 'sp-pnp-js';
 import { FieldName } from '../IMvpStoreProps';
 import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
@@ -286,7 +286,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
 
     private _getPeoplePickerItemsHandler(items: any[]) {
         let tempItemData: INewItemData = { ...this.state.newItemData };
-        let peoplePickerData: IMultiData = tempItemData["Product_x0020_Owner"];
+        let peoplePickerData: IMultiData = tempItemData["Product_x0020_OwnerId"];
 
         let resultSet: any[] = [];
 
@@ -301,9 +301,9 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             resultSet.length = 0;
         }
 
-        peoplePickerData = { results: [...resultSet] };
+        peoplePickerData = { "results" : [...resultSet] };
 
-        tempItemData["Product_x0020_Owner"] = peoplePickerData;
+        tempItemData["Product_x0020_OwnerId"] = peoplePickerData;
 
         this.setState({
             newItemData: tempItemData
@@ -332,6 +332,17 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             });
 
             throw new Error("File Type Error");
+        }
+
+        if(file.size > 7713582){
+            this.setState({
+                fileUploadError: true,
+                file: undefined,
+                imagePreviewUrl: null,
+                errorMessage: strings.ErrorFileSize
+            });
+
+            throw new Error("File Size Error");
         }
 
         if (this.checkIfFileExists(file.name)) {
@@ -522,7 +533,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
     protected onBusinessProblemBlurHandler = (event: any) => {
         let itemData: INewItemData = { ...this.state.newItemData };
         const tempItemTitle = escape(event.target.value).trim();
-        itemData[FieldName.BusinessProblem] = tempItemTitle;
+        itemData["OData__x006a_086"] = tempItemTitle;
         this.setState({
             newItemData: itemData
         });
@@ -548,7 +559,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             resultSet.splice(findItem, 1);
         }
 
-        countrySelectedData = { results: [...resultSet] };
+        countrySelectedData = { "results" : [...resultSet] };
 
         tempItemData["CountryId"] = countrySelectedData;
 
@@ -587,7 +598,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
     protected onDescriptionBlurHandler = (event: any) => {
         let itemData: INewItemData = { ...this.state.newItemData };
         const tempDescription = escape(event.target.value).trim();
-        itemData[FieldName.Description] = tempDescription;
+        itemData["OData__x0066_281"] = tempDescription;
         this.setState({
             newItemData: itemData
         });
@@ -597,6 +608,18 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         let itemData: INewItemData = { ...this.state.newItemData };
         const tempFeature = escape(event.target.value).trim();
         itemData[FieldName.Features] = tempFeature;
+        this.setState({
+            newItemData: itemData
+        });
+    }
+
+    protected onDemoBlurHandler = (event: any) => {
+        let itemData: INewItemData = { ...this.state.newItemData };
+        const tempFeature = escape(event.target.value).trim();
+        let demoValue : string = `
+        <div><div class="ms-rtestate-read ms-rte-embedcode ms-rtestate-notify ms-rte-embedil" contenteditable="false"><iframe width="640" height="360" src="${tempFeature}" allowfullscreen=""></iframe></div></div>
+        `;
+        itemData[FieldName.Demo] = demoValue;
         this.setState({
             newItemData: itemData
         });
@@ -736,7 +759,12 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             tempTechPlatform[index] = othersTechValue;
         }
 
-        dataToBeAdded[FieldName.TechnologyPlatform] = tempTechPlatform;
+        dataToBeAdded[FieldName.TechnologyPlatform] = {
+            __metadata : {
+                type : "Collection(Edm.String)"
+            },
+            results: [...tempTechPlatform]
+        };
 
         //Update Data_x0020_Source field
         const tempDataSource: string[] = [...this.state.newItemData[FieldName.DataSource]];
@@ -746,7 +774,12 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             tempDataSource[indexDataSource] = othersDataSourceValue;
         }
 
-        dataToBeAdded[FieldName.DataSource] = tempDataSource;
+        dataToBeAdded[FieldName.DataSource] = {
+            __metadata : {
+                type : "Collection(Edm.String)"
+            },
+            results: [...tempDataSource]
+        };
 
         //Update Who_Created_Solution field
         const tempWhoCreatedSolution: string[] = [...this.state.newItemData[FieldName.WhoCreatedTheSolution]];
@@ -756,17 +789,43 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             tempWhoCreatedSolution[indexWhoCreatedSolution] = othersWhoCreatedSolutionValue;
         }
 
-        dataToBeAdded[FieldName.WhoCreatedTheSolution] = tempWhoCreatedSolution;
+        dataToBeAdded[FieldName.WhoCreatedTheSolution] = {
+            __metadata : {
+                type : "Collection(Edm.String)"
+            },
+            results: [...tempWhoCreatedSolution]
+        };
 
+        //Update Segment
+        const tempSegmentData = [...dataToBeAdded["Segment"]];
+        dataToBeAdded["Segment"] = {
+            __metadata : {
+                type : "Collection(Edm.String)"
+            },
+            results: [...tempSegmentData]
+        };
 
-        console.log(dataToBeAdded);
+        //Update Target User Group
+        const tempTargetUser = [...dataToBeAdded["Target_x0020_User_x0020_Group"]];
+        dataToBeAdded["Target_x0020_User_x0020_Group"] = {
+            __metadata : {
+                type : "Collection(Edm.String)"
+            },
+            results: [...tempTargetUser]
+        };
+
+        const itemToBeAdded = await pnp.sp.web.lists.getById(this.props.listGUID).items.add({...dataToBeAdded}).then((iar: ItemAddResult) => iar);
+
+        console.log(itemToBeAdded);
+
+        this.props.onSaveCalled();        
 
     }
 
     public render(): React.ReactElement<INewItemProps> {
 
         const hideSpinner: React.CSSProperties = !this.state.showSpinner ? { display: "none" } : null;
-        const enableSaveButton: boolean = this.state.newItemData && this.state.newItemData[FieldName.BusinessProblem] && this.state.newItemData["CountryId"] && this.state.newItemData[FieldName.DataSource] && this.state.newItemData[FieldName.Description] && this.state.newItemData[FieldName.Features] && this.state.newItemData[FieldName.Function] && this.state.newItemData[FieldName.ProductOwner] && this.state.file && this.state.newItemData[FieldName.Segment] && this.state.newItemData[FieldName.SolutionName] && this.state.newItemData[FieldName.Status] && this.state.newItemData[FieldName.TechnologyPlatform] && this.state.newItemData[FieldName.WhoCreatedTheSolution] ? true : false;
+        const enableSaveButton: boolean = this.state.newItemData && this.state.newItemData["OData__x006a_086"] && this.state.newItemData["CountryId"] && this.state.newItemData[FieldName.DataSource] && this.state.newItemData["OData__x0066_281"] && this.state.newItemData[FieldName.Features] && this.state.newItemData[FieldName.Function] && this.state.newItemData["Product_x0020_OwnerId"] && this.state.file && this.state.newItemData[FieldName.Segment] && this.state.newItemData[FieldName.SolutionName] && this.state.newItemData[FieldName.Status] && this.state.newItemData[FieldName.TechnologyPlatform] && this.state.newItemData[FieldName.WhoCreatedTheSolution] && this.state.newItemData["Demo"] ? true : false;
 
         return (
             <Dialog
@@ -815,6 +874,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                         othersDataSourceValue={this.state.othersDataSourceValue}
                         othersWhoCreatedSolutionOnBlur={this.othersWhoCreatedSolutionOnBlurHandler.bind(this)}
                         othersWhoCreatedSolutionValue={this.state.othersWhoCreatedSolutionValue}
+                        demoOnBlur={this.onDemoBlurHandler.bind(this)}
                     />
                 </div>
                 <div>

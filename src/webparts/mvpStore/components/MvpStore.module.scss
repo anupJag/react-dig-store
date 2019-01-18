@@ -15,6 +15,15 @@
       @include ms-lg8;
       @include ms-md9;
       @include ms-sm12;
+      position: relative;
+
+      .showSpinner{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
     }
 
     .categoryView{

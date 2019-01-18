@@ -41,6 +41,7 @@ export interface IBodyProps {
     othersDataSourceValue: string;
     othersWhoCreatedSolutionOnBlur: (event: any) => void;
     othersWhoCreatedSolutionValue: string;
+    demoOnBlur: (event: any) => void;
     errorMessage: string;
 }
 
@@ -241,6 +242,7 @@ const body = (props: IBodyProps) => {
                         maxLength={255}
                         className={styles.Input}
                         description={"Add here a video of a demo of the solution. Upload video in Office 365 channel (you can access video channel at the following link https://team.effem.com/portals/hub/_layouts/15/PointPublishing.aspx?app=video&p=c&chid=2f3aa33d-a62e-46bd-946f-cbdbf516d107&s=0&t=pfb) and add embed code here. NOTE: you can upload max 1 video"}
+                        onBlur={props.demoOnBlur}
                     />
                 </div>
             </div>
