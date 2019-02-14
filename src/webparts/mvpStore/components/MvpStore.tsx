@@ -10,6 +10,7 @@ import { IChoiceGroupOption } from 'office-ui-fabric-react/lib/ChoiceGroup';
 import { IconType } from 'office-ui-fabric-react/lib/Icon';
 import NewItem from './NewItemView/NewItem';
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
+import ViewItemModal from './ViewItem/ViewItem';
 
 
 export interface IMvpStoreState {
@@ -21,6 +22,8 @@ export interface IMvpStoreState {
   postCount: any;
   hideDialog: boolean;
   showLoadingSpinner: boolean;
+  showItemProps : boolean;
+  itemIDToBeDisplayed : string | number;
 }
 
 
@@ -41,7 +44,9 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
       data: [],
       postCount: "All",
       hideDialog: true,
-      showLoadingSpinner: true
+      showLoadingSpinner: true,
+      showItemProps : false,
+      itemIDToBeDisplayed : '',
     };
   }
 
@@ -243,6 +248,20 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
     });
   }
 
+  protected onCardClickedHandler = (value : number | string) => {
+    this.setState({
+      showItemProps : true,
+      itemIDToBeDisplayed : value
+    });
+  }
+
+  protected onCardDismissCalledHandler = () : void => {
+    this.setState({
+      showItemProps : false,
+      itemIDToBeDisplayed : ''
+    });
+  }
+
   public render(): React.ReactElement<IMvpStoreProps> {
     const showNewItem: JSX.Element = !this.state.hideDialog ?
       <NewItem
@@ -261,6 +280,16 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
         <Spinner label={"Loading Data Please Wait"} size={SpinnerSize.large} />
       </div> :
       null;
+
+    const showItemProps : JSX.Element = this.state.showItemProps ? 
+    <ViewItemModal 
+      listGUID={this.props.list}
+      shouldModalBeOpen={this.state.showItemProps}
+      onDisMissCalled={this.onCardDismissCalledHandler.bind(this)}
+      id={this.state.itemIDToBeDisplayed}
+    /> 
+    : 
+    null;
     
     return (
       <div className={styles.mvpStore}>
@@ -275,11 +304,13 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
                       CardsData={(this.state.mvpStoreData && this.state.mvpStoreData.length > 0) ? this.state.mvpStoreData : []}
                       PostCount={this.state.selectedCategoryType === "All" ? "All" : this.state.mvpStoreData.length}
                       onAddButtonClick={this.onAddButtonClickHandler.bind(this)}
+                      onCardClicked={this.onCardClickedHandler.bind(this)}
                     /> 
                     : 
                     showSpinnerMain
                 }
                 {showNewItem}
+                {showItemProps}
               </div>
               <div className={styles.categoryView}>
                 <FilterView

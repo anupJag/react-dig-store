@@ -9,6 +9,7 @@ export interface IMainViewProps {
     CardsData: IMVPStoreData[];
     PostCount: any;
     onAddButtonClick:() => void;
+    onCardClicked: () => void; 
 }
 
 const mainView = (props: IMainViewProps) => {
@@ -21,6 +22,7 @@ const mainView = (props: IMainViewProps) => {
             />
             <InfoCards 
                 CardsData={props.CardsData}
+                onCardClicked={props.onCardClicked}
             />
         </div>
     );

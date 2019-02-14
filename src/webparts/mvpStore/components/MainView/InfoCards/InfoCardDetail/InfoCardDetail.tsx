@@ -11,7 +11,7 @@ import { ImageFit } from 'office-ui-fabric-react/lib/Image';
 
 export interface IInfoCardDetailsProps {
     backgroundUrl: string;
-    onClickRefLink: string;
+    onClickRefLink: () => void;
     projName: string;
     functions: string[];
 }
@@ -24,7 +24,7 @@ const infoCardDetail = (props: IInfoCardDetailsProps) => {
     };
 
     return (
-        <DocumentCard className={styles.DocumentCard} onClickHref={props.onClickRefLink} >
+        <DocumentCard className={styles.DocumentCard} onClick={props.onClickRefLink}>
             <div
                 className={styles.ImageContainer}
             >
@@ -35,7 +35,7 @@ const infoCardDetail = (props: IInfoCardDetailsProps) => {
                     {
                         props.functions.map((el, index) => {
                             return (
-                                <span>{el}{props.functions.length - 1 === index ? null : ","}</span>
+                                <span key={index}>{el}{props.functions.length - 1 === index ? null : ","}</span>
                             );
                         })
                     }

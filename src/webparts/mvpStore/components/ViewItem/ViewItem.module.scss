@@ -1,0 +1,16 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.viewItemModalContainer{
+    display: flex;
+    height: 80vh;
+    width: 80vw;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    background-color: transparent;
+
+    .viewGap{
+        height: 0.7%;
+        width: 100%;
+        background-color: transparent;
+    }
+}

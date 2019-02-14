@@ -1,0 +1,15 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+
+.viewHeader{
+    height: 13%;
+    width: 100%;
+    background-color: $ms-color-themePrimary;
+    color: $ms-color-themeLighterAlt;
+
+    .viewTtile{
+        font-size: 2.5em;
+        line-height: 2;
+        margin-left: 0.5em;
+    }
+}

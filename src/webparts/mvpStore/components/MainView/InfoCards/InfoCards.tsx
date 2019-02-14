@@ -5,6 +5,7 @@ import { IMVPStoreData } from '../../IMvpStoreProps';
 
 export interface IInfoCardsProps {
     CardsData: IMVPStoreData[];
+    onCardClicked : (value : number | string) => void;
 }
 
 const infoCards = (props: IInfoCardsProps) => {
@@ -15,7 +16,7 @@ const infoCards = (props: IInfoCardsProps) => {
                     <InfoCardDetails 
                         backgroundUrl={el.Images}
                         functions={el.Target_x0020_User_x0020_Group}
-                        onClickRefLink={el.ListItemUrl}
+                        onClickRefLink={props.onCardClicked.bind(this, el.Id)}
                         projName={el.Title}
                     />    
                 )
