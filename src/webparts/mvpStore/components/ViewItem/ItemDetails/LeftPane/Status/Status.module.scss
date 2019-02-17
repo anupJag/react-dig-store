@@ -1,0 +1,20 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.statusInfo{
+    width: 100%;
+    height: max-content;
+    margin-top: 10px;
+
+    .statusData{
+        font-size: 1em;
+        color: grey;
+        width: 90%;
+    
+    }
+
+    .statusInfoData{
+        font-size: 1em;
+        font-weight: 600;
+        color: black;
+    }
+}

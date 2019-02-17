@@ -35,8 +35,8 @@ export interface INewItemData {
     Title: string;
     Images: string;
     Features: string;
-    OData__x006a_086: string; //Business Problem
-    OData__x0066_281: string; // Description
+    OData__x006a_086: string; //Description
+    OData__x0066_281: string; // Business Problem
     Product_x0020_OwnerId: IMultiData;
     Status: string;
     Target_x0020_User_x0020_Group : any;

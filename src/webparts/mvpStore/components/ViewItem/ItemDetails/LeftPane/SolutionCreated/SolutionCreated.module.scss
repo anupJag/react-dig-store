@@ -1,0 +1,25 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.solutionCreatedInfo{
+    width: 100%;
+    height: max-content;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    .solutionCreatedData{
+        margin-bottom: 5px;
+        font-size: 1em;
+        color: grey;
+        width: 90%;
+        padding-bottom: 3px;
+    }
+
+    .normalizeUL{
+        margin : 0;
+
+        .nosolutionCreatedData{
+            font-size: 1em;
+            color: red;
+        }
+    }
+}

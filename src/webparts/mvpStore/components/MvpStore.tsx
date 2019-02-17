@@ -287,6 +287,7 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
       shouldModalBeOpen={this.state.showItemProps}
       onDisMissCalled={this.onCardDismissCalledHandler.bind(this)}
       id={this.state.itemIDToBeDisplayed}
+      webURL={this.props.siteURL}
     /> 
     : 
     null;

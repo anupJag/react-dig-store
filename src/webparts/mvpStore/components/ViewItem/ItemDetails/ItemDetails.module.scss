@@ -1,0 +1,78 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+
+.itemDetailsContainer{
+    width: 100%;
+    height: 100%;
+    @include ms-Grid-row;
+    display: flex;
+    margin: 0 !important;
+    border: 1px solid;
+    border-color: $ms-color-themePrimary;
+
+    .itemDetailsLeftPane{
+        @include ms-Grid-col;
+        @include ms-lg3;
+        @include ms-md3;
+        @include ms-sm12;
+        height: 100%;
+        background: #fff;
+        border-right: 1px solid;
+        border-color: $ms-color-themePrimary;
+        box-sizing: content-box;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 5px;
+        }
+    
+        /* Track */
+        &::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            background: #888; 
+        }
+    
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+    }
+
+    .itemDetailsRightPane{
+        @include ms-Grid-col;
+        @include ms-lg9;
+        @include ms-md9;
+        @include ms-sm12;
+        height: 100%;
+        background: #fff;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 5px;
+        }
+    
+        /* Track */
+        &::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        
+        /* Handle */
+        &::-webkit-scrollbar-thumb {
+            background: #888; 
+        }
+    
+        /* Handle on hover */
+        &::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+    }
+}

@@ -1,8 +1,14 @@
 import * as React from 'react';
 
-const rightPane = (props) => {
-    return(
-        <div></div>
+
+export interface IRightPane {
+    baseClassApply: string;
+}
+
+
+const rightPane = (props : IRightPane) => {
+    return (
+        <div className={props.baseClassApply}></div>
     );
 };
 

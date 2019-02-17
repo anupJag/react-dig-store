@@ -2,10 +2,11 @@
 
 .viewItemModalContainer{
     display: flex;
-    height: 80vh;
-    width: 80vw;
+    height: 90vh;
+    width: 70vw;
     flex-flow: column nowrap;
     align-items: stretch;
+    overflow: hidden;
     background-color: transparent;
 
     .viewGap{
@@ -13,4 +14,21 @@
         width: 100%;
         background-color: transparent;
     }
+
+    .spinnerContainer{
+        height: 100%;
+        width: 100%;
+        position: relative;
+        background-color: white;
+
+        .spinnerPosition{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+    }
+
+    
 }

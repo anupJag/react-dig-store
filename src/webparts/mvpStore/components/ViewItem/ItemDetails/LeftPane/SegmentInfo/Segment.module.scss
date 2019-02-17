@@ -1,0 +1,21 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.segmentInfo{
+    width: 100%;
+    height: max-content;
+    margin-top: 10px;
+
+    .segmentData{
+        margin-bottom: 5px;
+        font-size: 1em;
+        color: grey;
+        width: 90%;
+        padding-bottom: 3px;
+    
+    }
+
+    .noSegmentData{
+        font-size: 1em;
+        color: red;
+    }
+}

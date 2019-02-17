@@ -1,10 +1,14 @@
 import * as React from 'react';
 import { Modal } from 'office-ui-fabric-react/lib/Modal';
 import pnp from 'sp-pnp-js';
-import { IViewItemProps, IViewItemState } from './IViewItem';
+import { IViewItemProps, IViewItemState, IMVPDataView, IUserInfo } from './IViewItem';
 import styles from './ViewItem.module.scss';
 import ViewItemHeader from './ViewHeader/ViewHeader';
 import { FieldName } from '../IMvpStoreProps';
+import ItemDetails from './ItemDetails/ItemDetails';
+import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner';
+import { unescape } from '@microsoft/sp-lodash-subset';
+
 
 
 export default class ViewItem extends React.Component<IViewItemProps, IViewItemState>{
@@ -12,22 +16,119 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
     constructor(props: IViewItemProps) {
         super(props);
         this.state = {
-            id: props.id
+            id: props.id,
+            itemInfo: null,
+            showSpinner: true,
+            contributorData: null,
+            productOwnerData: []
         };
     }
 
     public componentDidMount(): void {
         //GET ITEM DETAILS
-        this.getItemDetails(parseInt(this.state.id.toString(), 10)).then(() => console.log("We Shall See"));
+        this.getItemDetails(parseInt(this.state.id.toString(), 10)).then(() => {
+            this.buildUserInfo(this.state.itemInfo.AuthorId);
+        }).then(() => {
+
+            this.buildUserInfo([...this.state.itemInfo.Product_x0020_OwnerId]).then(() => {
+                this.setState({
+                    showSpinner: false
+                });
+            });
+        });
     }
 
     private getItemDetails = async (value: number) => {
-        const itemDetails = await pnp.sp.web.lists.getById(this.props.listGUID).items.getById(value).select(FieldName.SolutionName, FieldName.Segment, `OData_${FieldName.Description}`, `${FieldName.ProductOwner}Id`, FieldName.Status, FieldName.WhoCreatedTheSolution, "AuthorId").get().then(el => el);
-        console.log(itemDetails);
+        let tempData: IMVPDataView = null;
+        await pnp.sp.web.lists.getById(this.props.listGUID).items.getById(value).select(FieldName.SolutionName, FieldName.Segment, `OData_${FieldName.Description}`, `${FieldName.ProductOwner}Id`, FieldName.Status, FieldName.WhoCreatedTheSolution, "AuthorId").configure({
+            headers: {
+                'Accept': 'application/json;odata=nometadata',
+                'odata-version': ''
+            }
+        }).get().then((el: IMVPDataView) =>
+            tempData = el);
+
+        this.setState({
+            itemInfo: tempData
+        });
     }
 
+    private buildUserInfo = async (userID: number | number[]) => {
+        if (typeof userID === "number") {
+            let userInfo: IUserInfo = null;
+            await pnp.sp.web.getUserById(userID).configure({
+                headers: {
+                    'Accept': 'application/json;odata=nometadata',
+                    'odata-version': ''
+                }
+            }).get().then(el => {
+                userInfo = {
+                    imgURL: `${this.props.webURL}/_layouts/15/userphoto.aspx?size=L&username=${el.Email}`,
+                    text: el.Title
+                };
+            });
+
+            this.setState({
+                contributorData: userInfo
+            });
+        }
+
+        if (typeof userID === "object") {
+            let userInfoData: IUserInfo[] = [];
+
+            let batch = pnp.sp.createBatch();
+
+            let prodOwnerArray: number[] = [...userID];
+
+            for (let index = 0; index < prodOwnerArray.length; index++) {
+
+                pnp.sp.web.getUserById(prodOwnerArray[index]).configure({
+                    headers: {
+                        'Accept': 'application/json;odata=nometadata',
+                        'odata-version': ''
+                    }
+                }).inBatch(batch).get().then(el => {
+
+                    userInfoData.push({
+                        imgURL: `${this.props.webURL}/_layouts/15/userphoto.aspx?size=L&username=${el.Email}`,
+                        text: el.Title
+                    });
+                }).catch(error => error);
+            }
+
+            await batch.execute().then(() => {
+                this.setState({
+                    productOwnerData: userInfoData
+                });
+            });
+
+        }
+    }
 
     public render(): React.ReactElement<IViewItemProps> {
+
+        const showSpinnerMain: JSX.Element = this.state.showSpinner ?
+            <div className={styles.spinnerContainer}>
+                <div className={styles.spinnerPosition}>
+                    <Spinner label={"Loading Data Please Wait"} size={SpinnerSize.large} />
+                </div>
+            </div> :
+            null;
+
+        const showData: JSX.Element = !this.state.showSpinner ? <React.Fragment>
+            <ViewItemHeader itemIitle={this.state.itemInfo ? this.state.itemInfo["Title"] : "Title Not Loaded"} />
+            <div className={styles.viewGap}></div>
+            <ItemDetails
+                contributorDataInfo={this.state.contributorData}
+                productOwnerDataInfo={this.state.productOwnerData}
+                segmentInfo={this.state.itemInfo.Segment as string[]}
+                descriptionInfo={unescape(this.state.itemInfo.OData__x006a_086.trim())}
+                statusInfo={this.state.itemInfo.Status}
+                solutionCreatedInfo={this.state.itemInfo.Who_x0020_created_x0020_the_x002}
+            />
+        </React.Fragment> :
+            null;
+
         return (
             <div>
                 <Modal
@@ -36,9 +137,8 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
                     onDismiss={this.props.onDisMissCalled}
                     containerClassName={styles.viewItemModalContainer}
                 >
-                    <ViewItemHeader itemIitle={"Hello World"} />
-                    <div className={styles.viewGap}></div>
-                    {/* <Details /> */}
+                    {showSpinnerMain}
+                    {showData}
                 </Modal>
             </div>
         );

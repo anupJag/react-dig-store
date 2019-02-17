@@ -533,7 +533,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
     protected onBusinessProblemBlurHandler = (event: any) => {
         let itemData: INewItemData = { ...this.state.newItemData };
         const tempItemTitle = escape(event.target.value).trim();
-        itemData["OData__x006a_086"] = tempItemTitle;
+        itemData["OData__x0066_281"] = tempItemTitle;
         this.setState({
             newItemData: itemData
         });
@@ -598,7 +598,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
     protected onDescriptionBlurHandler = (event: any) => {
         let itemData: INewItemData = { ...this.state.newItemData };
         const tempDescription = escape(event.target.value).trim();
-        itemData["OData__x0066_281"] = tempDescription;
+        itemData["OData__x006a_086"] = tempDescription;
         this.setState({
             newItemData: itemData
         });

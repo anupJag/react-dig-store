@@ -1,0 +1,16 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+
+.contributorHolder{
+    width: 100%;
+    height: max-content;
+
+    .contributorName{
+        margin-bottom: 5px;
+        font-size: 1em;
+        color: grey;
+        width: 90%;
+        padding-bottom: 3px;
+    }
+}
+
