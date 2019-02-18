@@ -1,0 +1,36 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.countriesInfo{
+    width: 100%;
+    height: max-content;
+    margin-top: 20px;
+    margin-left: 20px;
+
+    .countriesInfoHeader{
+        margin-bottom: 5px;
+        font-size: 1em;
+        color: grey;
+        width: 90%;
+        padding-bottom: 3px;
+    }
+
+    .countryList{
+        width: 100%;
+
+        ul{
+            margin: 0;
+            display: inline-block;
+            padding-inline-start: 0;
+            width: 100%;
+            height: max-content;
+
+            li{
+                display: inline-block;
+                width: 25%;
+                margin: 5px 20px;
+                text-transform: uppercase;
+            }
+
+        }
+    }
+}

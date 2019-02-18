@@ -8,13 +8,17 @@ export interface IItemDetailsProps{
     contributorDataInfo : IUserInfo;
     productOwnerDataInfo : IUserInfo[];
     segmentInfo : string[];
-    descriptionInfo: string;
     statusInfo: string;
     solutionCreatedInfo : string[];
     imgURL: string;
     altString: string;
     businessProblemInfo : string;
     featuresInfo : string;
+    countriesList : string[];
+    descriptionInfo : string;
+    functionListInfo : string[];
+    techUsedInfo : string[];
+    dataSourceUsed: string[];
 }
 
 
@@ -27,9 +31,9 @@ const itemDetails = (props : IItemDetailsProps) => {
                 userDetails={props.contributorDataInfo}
                 productOwnerInfo={props.productOwnerDataInfo}
                 segmentInfo={props.segmentInfo}
-                descriptionInfo={props.descriptionInfo}
                 statusInfo={props.statusInfo}
                 solutionCreatedInfo={props.solutionCreatedInfo}
+                functionInfoList={props.functionListInfo}
             />
             <RightPane 
                 baseClassApply={styles.itemDetailsRightPane} 
@@ -37,6 +41,10 @@ const itemDetails = (props : IItemDetailsProps) => {
                 imgURL={props.imgURL}
                 businessProblemInfo={props.businessProblemInfo}
                 featuresInfo={props.featuresInfo}
+                countriesList={props.countriesList}
+                descriptionInfo={props.descriptionInfo}
+                techUsedInfo={props.techUsedInfo}
+                dataSourceUsed={props.dataSourceUsed}
             />
         </div>
     );

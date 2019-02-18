@@ -29,7 +29,7 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
         this.getItemDetails(parseInt(this.state.id.toString(), 10)).then(() => this.buildUserInfo(this.state.itemInfo.AuthorId)
         ).then(() => this.buildUserInfo([...this.state.itemInfo.Product_x0020_OwnerId])
         ).then(() => {
-            const itemData : IMVPDataView = {...this.state.itemInfo};
+            const itemData: IMVPDataView = { ...this.state.itemInfo };
             let imgURL: string = itemData["Images"];
             let reg: RegExp = new RegExp(/<img\s[^>]*?src\s*=\s*['\"]([^'\"]*?)['\"][^>]*?>/);
             let extractImageResult = reg.exec(imgURL);
@@ -44,9 +44,9 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
             }
 
             itemData["Images"] = imgURL;
-            
+
             this.setState({
-                itemInfo : itemData,
+                itemInfo: itemData,
                 showSpinner: false
             });
 
@@ -55,13 +55,25 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
 
     private getItemDetails = async (value: number) => {
         let tempData: IMVPDataView = null;
-        await pnp.sp.web.lists.getById(this.props.listGUID).items.getById(value).select(FieldName.SolutionName, FieldName.Segment, `OData_${FieldName.Description}`, `${FieldName.ProductOwner}Id`, FieldName.Status, FieldName.WhoCreatedTheSolution, FieldName.ScreenShots, "AuthorId", `OData_${FieldName.BusinessProblem}`, FieldName.Features).configure({
+        await pnp.sp.web.lists.getById(this.props.listGUID).items.getById(value).select(FieldName.SolutionName, FieldName.Segment, `OData_${FieldName.Description}`, `${FieldName.ProductOwner}Id`, FieldName.Status, FieldName.WhoCreatedTheSolution, FieldName.ScreenShots, "AuthorId", `OData_${FieldName.BusinessProblem}`, FieldName.Features, `${FieldName.Country}/Title`, FieldName.Function, FieldName.TechnologyPlatform, FieldName.DataSource).expand(FieldName.Country).configure({
             headers: {
                 'Accept': 'application/json;odata=nometadata',
                 'odata-version': ''
             }
-        }).get().then((el: IMVPDataView) =>
-            tempData = el);
+        }).get().then((el: any) => {
+            let Country: string[] = el.Country.map(elItem => {
+                let tempValue = elItem.Title;
+                if(tempValue.toString().indexOf("ALL - it's") >= 0){
+                    tempValue = "Global Solution";
+                }
+
+                return tempValue;
+            });
+            tempData = {
+                ...el,
+                Country
+            };
+        });
 
         this.setState({
             itemInfo: tempData
@@ -137,13 +149,17 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
                 contributorDataInfo={this.state.contributorData}
                 productOwnerDataInfo={this.state.productOwnerData}
                 segmentInfo={this.state.itemInfo.Segment as string[]}
-                descriptionInfo={ this.state.itemInfo["OData__x006a_086"] ? unescape(this.state.itemInfo.OData__x006a_086.trim()) : "No Description Available"}
+                descriptionInfo={this.state.itemInfo["OData__x006a_086"] ? unescape(this.state.itemInfo.OData__x006a_086.trim()) : "Description Not Available"}
                 statusInfo={this.state.itemInfo.Status}
                 solutionCreatedInfo={this.state.itemInfo.Who_x0020_created_x0020_the_x002}
                 imgURL={this.state.itemInfo.Images}
                 altString={this.state.itemInfo.Title}
-                businessProblemInfo={ this.state.itemInfo["OData__x0066_281"] ? unescape(this.state.itemInfo.OData__x0066_281.trim()) : "No Business Problem Information Avaialble"}
-                featuresInfo={ this.state.itemInfo["Features"] ? unescape(this.state.itemInfo.Features.trim()) : "No Features Information Available"}
+                businessProblemInfo={this.state.itemInfo["OData__x0066_281"] ? unescape(this.state.itemInfo.OData__x0066_281.trim()) : "Business Problem Information Not Avaialble"}
+                featuresInfo={this.state.itemInfo["Features"] ? unescape(this.state.itemInfo.Features.trim()) : "Features Information Not Available"}
+                countriesList={this.state.itemInfo.Country}
+                functionListInfo={this.state.itemInfo.Target_x0020_User_x0020_Group}
+                techUsedInfo={this.state.itemInfo.Technology_x0020_platform as string[]}
+                dataSourceUsed={this.state.itemInfo.Data_x0020_Source as string[]}
             />
         </React.Fragment> :
             null;

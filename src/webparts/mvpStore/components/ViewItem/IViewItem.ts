@@ -26,7 +26,7 @@ export interface IMVPDataView {
     Technology_x0020_platform: any;
     Data_x0020_Source: any;
     Demo: string;
-    CountryId: string[];
+    Country: string[];
     Comments: string;
     Segment: any;
     Who_x0020_created_x0020_the_x002 : string[];

@@ -6,10 +6,13 @@ export interface IFeaturesProps{
 }
 
 const features = (props : IFeaturesProps) => {
+
+    const forceStyle : React.CSSProperties = props.featuresInfo === "Features Information Not Available" ? { color : "red"} : null;
+
     return(
         <div className={styles.featuresInfo}>
             <div className={styles.featuresInfoHeader}>Features:</div>
-            <div dangerouslySetInnerHTML={{ __html : props.featuresInfo}} className={styles.featuresInner}></div>
+            <div dangerouslySetInnerHTML={{ __html : props.featuresInfo}} className={styles.featuresInner}style={forceStyle}></div>
         </div>
     );
 };

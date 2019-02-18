@@ -4,18 +4,18 @@ import { IUserInfo } from '../../IViewItem';
 import styles from './LeftPane.module.scss';
 import ProductOwnerInfo from './ProductOwnerData/ProductOwnerData';
 import SegmentInfo from './SegmentInfo/SegmentInfo';
-import DescriptionInfo from './Description/Description';
 import StatusInfo from './Status/Status';
 import SolutionCreatedInfo from './SolutionCreated/SolutionCreated';
+import FunctionInfo from './FunctionInfo/FunctionInfo';
 
 export interface ILeftPaneProps {
     baseClassApply: string;
     userDetails: IUserInfo;
     productOwnerInfo : IUserInfo[];
     segmentInfo : string[];
-    descriptionInfo: string;
     statusInfo: string;
     solutionCreatedInfo : string[];
+    functionInfoList : string[];
 }
 
 
@@ -32,8 +32,8 @@ const leftPane = (props: ILeftPaneProps) => {
                 <SegmentInfo 
                     segmentInfo={props.segmentInfo}
                 />
-                <DescriptionInfo 
-                    description={props.descriptionInfo}
+                <FunctionInfo 
+                    funtionList={props.functionInfoList}
                 />
                 <StatusInfo 
                     statusInfo={props.statusInfo}

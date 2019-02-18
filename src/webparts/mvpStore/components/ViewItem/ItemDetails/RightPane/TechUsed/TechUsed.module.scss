@@ -1,28 +1,22 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
-.businessProblemInfo{
+.techUsedInfo{
     width: 100%;
     height: max-content;
     margin-top: 10px;
     margin-left: 20px;
 
-    .businessProblemInfoHeader{
+    .techUsedData{
         margin-bottom: 5px;
         font-size: 1em;
         color: grey;
         width: 90%;
         padding-bottom: 3px;
+    
     }
 
-    .businessProblemInner{
-        width: 95%;
-
-        p{
-            margin : 0;
-        }
-
-        ul{
-            margin : 0;
-        }
+    .noTechUsedData{
+        font-size: 1em;
+        color: red;
     }
 }

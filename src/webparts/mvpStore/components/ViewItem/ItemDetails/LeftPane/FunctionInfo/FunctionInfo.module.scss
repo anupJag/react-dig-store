@@ -1,12 +1,12 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
-.businessProblemInfo{
+.functionInfo{
     width: 100%;
     height: max-content;
     margin-top: 10px;
-    margin-left: 20px;
+    margin-bottom: 10px;
 
-    .businessProblemInfoHeader{
+    .functionInfoData{
         margin-bottom: 5px;
         font-size: 1em;
         color: grey;
@@ -14,15 +14,19 @@
         padding-bottom: 3px;
     }
 
-    .businessProblemInner{
+    .dataHolder{
         width: 95%;
 
-        p{
-            margin : 0;
+        .normalizeUL{
+            margin : 0;  
+        }
+    
+        .nofunctionInfoData{
+            font-size: 1em;
+            color: red;
         }
 
-        ul{
-            margin : 0;
-        }
     }
+    
+    
 }
