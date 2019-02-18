@@ -26,21 +26,36 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
 
     public componentDidMount(): void {
         //GET ITEM DETAILS
-        this.getItemDetails(parseInt(this.state.id.toString(), 10)).then(() => {
-            this.buildUserInfo(this.state.itemInfo.AuthorId);
-        }).then(() => {
+        this.getItemDetails(parseInt(this.state.id.toString(), 10)).then(() => this.buildUserInfo(this.state.itemInfo.AuthorId)
+        ).then(() => this.buildUserInfo([...this.state.itemInfo.Product_x0020_OwnerId])
+        ).then(() => {
+            const itemData : IMVPDataView = {...this.state.itemInfo};
+            let imgURL: string = itemData["Images"];
+            let reg: RegExp = new RegExp(/<img\s[^>]*?src\s*=\s*['\"]([^'\"]*?)['\"][^>]*?>/);
+            let extractImageResult = reg.exec(imgURL);
 
-            this.buildUserInfo([...this.state.itemInfo.Product_x0020_OwnerId]).then(() => {
-                this.setState({
-                    showSpinner: false
-                });
+            if (!extractImageResult) {
+                imgURL = `https://team.effem.com/sites/digitalmarssolutionstore/SiteAssets/Images/placeholder-image.jpg`;
+            }
+            else {
+                if (extractImageResult.length > 0) {
+                    imgURL = extractImageResult[1].toString();
+                }
+            }
+
+            itemData["Images"] = imgURL;
+            
+            this.setState({
+                itemInfo : itemData,
+                showSpinner: false
             });
+
         });
     }
 
     private getItemDetails = async (value: number) => {
         let tempData: IMVPDataView = null;
-        await pnp.sp.web.lists.getById(this.props.listGUID).items.getById(value).select(FieldName.SolutionName, FieldName.Segment, `OData_${FieldName.Description}`, `${FieldName.ProductOwner}Id`, FieldName.Status, FieldName.WhoCreatedTheSolution, "AuthorId").configure({
+        await pnp.sp.web.lists.getById(this.props.listGUID).items.getById(value).select(FieldName.SolutionName, FieldName.Segment, `OData_${FieldName.Description}`, `${FieldName.ProductOwner}Id`, FieldName.Status, FieldName.WhoCreatedTheSolution, FieldName.ScreenShots, "AuthorId", `OData_${FieldName.BusinessProblem}`, FieldName.Features).configure({
             headers: {
                 'Accept': 'application/json;odata=nometadata',
                 'odata-version': ''
@@ -122,9 +137,13 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
                 contributorDataInfo={this.state.contributorData}
                 productOwnerDataInfo={this.state.productOwnerData}
                 segmentInfo={this.state.itemInfo.Segment as string[]}
-                descriptionInfo={unescape(this.state.itemInfo.OData__x006a_086.trim())}
+                descriptionInfo={ this.state.itemInfo["OData__x006a_086"] ? unescape(this.state.itemInfo.OData__x006a_086.trim()) : "No Description Available"}
                 statusInfo={this.state.itemInfo.Status}
                 solutionCreatedInfo={this.state.itemInfo.Who_x0020_created_x0020_the_x002}
+                imgURL={this.state.itemInfo.Images}
+                altString={this.state.itemInfo.Title}
+                businessProblemInfo={ this.state.itemInfo["OData__x0066_281"] ? unescape(this.state.itemInfo.OData__x0066_281.trim()) : "No Business Problem Information Avaialble"}
+                featuresInfo={ this.state.itemInfo["Features"] ? unescape(this.state.itemInfo.Features.trim()) : "No Features Information Available"}
             />
         </React.Fragment> :
             null;

@@ -1,11 +1,12 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
-.descriptionInfo{
+.featuresInfo{
     width: 100%;
     height: max-content;
     margin-top: 10px;
+    margin-left: 20px;
 
-    .descriptionInfoHeader{
+    .featuresInfoHeader{
         margin-bottom: 5px;
         font-size: 1em;
         color: grey;
@@ -13,8 +14,8 @@
         padding-bottom: 3px;
     }
 
-    .descriptionInner{
-        width: 90%;
+    .featuresInner{
+        width: 95%;
 
         p{
             margin : 0;

@@ -196,7 +196,7 @@ export default class MvpStore extends React.Component<IMvpStoreProps, IMvpStoreS
           let extractImageResult = reg.exec(imageTag);
 
           if (!extractImageResult) {
-            imageTag = `http://www.independentmediators.co.uk/wp-content/uploads/2016/02/placeholder-image.jpg`;
+            imageTag = `https://team.effem.com/sites/digitalmarssolutionstore/SiteAssets/Images/placeholder-image.jpg`;
           }
           else {
             if (extractImageResult.length > 0) {

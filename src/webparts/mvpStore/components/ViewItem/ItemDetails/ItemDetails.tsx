@@ -11,6 +11,10 @@ export interface IItemDetailsProps{
     descriptionInfo: string;
     statusInfo: string;
     solutionCreatedInfo : string[];
+    imgURL: string;
+    altString: string;
+    businessProblemInfo : string;
+    featuresInfo : string;
 }
 
 
@@ -27,7 +31,13 @@ const itemDetails = (props : IItemDetailsProps) => {
                 statusInfo={props.statusInfo}
                 solutionCreatedInfo={props.solutionCreatedInfo}
             />
-            <RightPane baseClassApply={styles.itemDetailsRightPane} />
+            <RightPane 
+                baseClassApply={styles.itemDetailsRightPane} 
+                altString={props.altString}
+                imgURL={props.imgURL}
+                businessProblemInfo={props.businessProblemInfo}
+                featuresInfo={props.featuresInfo}
+            />
         </div>
     );
 };

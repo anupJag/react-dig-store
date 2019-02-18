@@ -1,0 +1,29 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+
+.imageHolderContainer{
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+
+    .anchorHolder{
+        height: 100%;
+        width: 50%;
+        align-self: center;
+        padding : 3px;
+        border: 1px solid;
+        border-color: $ms-color-themePrimary;
+
+        .image{
+            height: 100%;
+            width: 100%;
+        }
+
+    }
+
+
+}
