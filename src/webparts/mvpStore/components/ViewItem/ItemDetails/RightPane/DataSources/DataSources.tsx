@@ -10,7 +10,7 @@ export interface IDataSourceProps {
 const dataSourceUsed = (props: IDataSourceProps) => {
     return (
         <div className={styles.dataSourceInfo}>
-            <div className={styles.dataSourceData}>Data Source(s) the solution uses</div>
+            <div className={styles.dataSourceData}>Data Source(s) the solution uses:</div>
             {
                 props.dataSourcesUsed && props.dataSourcesUsed.length > 0 ?
                     props.dataSourcesUsed.map(el => <Chips title={el} />)

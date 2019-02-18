@@ -19,6 +19,7 @@ export interface IItemDetailsProps{
     functionListInfo : string[];
     techUsedInfo : string[];
     dataSourceUsed: string[];
+    mvpNumber: string;
 }
 
 
@@ -34,6 +35,7 @@ const itemDetails = (props : IItemDetailsProps) => {
                 statusInfo={props.statusInfo}
                 solutionCreatedInfo={props.solutionCreatedInfo}
                 functionInfoList={props.functionListInfo}
+                mvpNumber={props.mvpNumber}
             />
             <RightPane 
                 baseClassApply={styles.itemDetailsRightPane} 

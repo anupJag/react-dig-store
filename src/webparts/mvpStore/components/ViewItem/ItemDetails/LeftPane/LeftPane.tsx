@@ -7,6 +7,7 @@ import SegmentInfo from './SegmentInfo/SegmentInfo';
 import StatusInfo from './Status/Status';
 import SolutionCreatedInfo from './SolutionCreated/SolutionCreated';
 import FunctionInfo from './FunctionInfo/FunctionInfo';
+import MVPNumber from './MVPNumber/MVPNumber';
 
 export interface ILeftPaneProps {
     baseClassApply: string;
@@ -16,6 +17,7 @@ export interface ILeftPaneProps {
     statusInfo: string;
     solutionCreatedInfo : string[];
     functionInfoList : string[];
+    mvpNumber: string;
 }
 
 
@@ -31,6 +33,9 @@ const leftPane = (props: ILeftPaneProps) => {
                 />
                 <SegmentInfo 
                     segmentInfo={props.segmentInfo}
+                />
+                <MVPNumber 
+                    mvpNumber={props.mvpNumber}
                 />
                 <FunctionInfo 
                     funtionList={props.functionInfoList}

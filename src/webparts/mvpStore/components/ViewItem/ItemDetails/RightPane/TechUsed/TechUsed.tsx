@@ -10,7 +10,7 @@ export interface ITechUsedProps {
 const techUsed = (props: ITechUsedProps) => {
     return (
         <div className={styles.techUsedInfo}>
-            <div className={styles.techUsedData}>Technology(s) Used to Build Solution</div>
+            <div className={styles.techUsedData}>Technology(s) Used to Build Solution:</div>
             {
                 props.techUsedInfo && props.techUsedInfo.length > 0 ?
                     props.techUsedInfo.map(el => <Chips title={el} />)

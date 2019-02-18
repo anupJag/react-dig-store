@@ -1,2 +1,20 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
+.infoHolder{
+    width: 100%;
+    height: max-content;
+    margin-bottom: 10px;
+    display: flex;
+    
+
+    .techHolder{
+        width: 50%;
+        height: max-content;
+    }
+
+    .dataSourceHolder{
+        width: 50%;
+        height: max-content;
+    }
+
+}

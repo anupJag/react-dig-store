@@ -6,17 +6,18 @@ import Countries from './Countries/Countries';
 import DescriptionInfo from './Description/Description';
 import TechUsed from './TechUsed/TechUsed';
 import DataSource from './DataSources/DataSources';
+import styles from './RightPane.module.scss';
 
 export interface IRightPane {
     baseClassApply: string;
     imgURL: string;
     altString: string;
-    businessProblemInfo : string;
-    featuresInfo : string;
+    businessProblemInfo: string;
+    featuresInfo: string;
     countriesList: string[];
-    descriptionInfo : string;
-    techUsedInfo : string[];
-    dataSourceUsed : string[];
+    descriptionInfo: string;
+    techUsedInfo: string[];
+    dataSourceUsed: string[];
 }
 
 
@@ -27,24 +28,30 @@ const rightPane = (props: IRightPane) => {
                 imgURL={props.imgURL}
                 altString={props.altString}
             />
-            <DescriptionInfo 
-                 description={props.descriptionInfo}
+            <DescriptionInfo
+                description={props.descriptionInfo}
             />
-            <BusinessProblemInfo 
+            <BusinessProblemInfo
                 businessProblemInfo={props.businessProblemInfo}
             />
-            <Features 
+            <Features
                 featuresInfo={props.featuresInfo}
             />
-            <Countries 
+            <Countries
                 countriesList={props.countriesList}
             />
-            <TechUsed 
-                techUsedInfo={props.techUsedInfo}
-            />
-            <DataSource 
-                dataSourcesUsed={props.dataSourceUsed}
-            />
+            <div className={styles.infoHolder}>
+                <div className={styles.techHolder}>
+                    <TechUsed
+                        techUsedInfo={props.techUsedInfo}
+                    />
+                </div>
+                <div className={styles.dataSourceHolder}>
+                    <DataSource
+                        dataSourcesUsed={props.dataSourceUsed}
+                    />
+                </div>
+            </div>
         </div>
     );
 };

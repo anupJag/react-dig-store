@@ -42,6 +42,7 @@ export interface IBodyProps {
     othersWhoCreatedSolutionOnBlur: (event: any) => void;
     othersWhoCreatedSolutionValue: string;
     demoOnBlur: (event: any) => void;
+    onMVPNumberOnBlur : (event : any) => void;
     errorMessage: string;
 }
 
@@ -156,7 +157,7 @@ const body = (props: IBodyProps) => {
                     </div>
                 </div>
                 <div className={styles.Content}>
-                    <Label className={styles.Label} required={true}>Funtion</Label>
+                    <Label className={styles.Label} required={true}>Function</Label>
                     <div className={styles.Input}>
                         <Dropdown
                             options={props.function}
@@ -235,7 +236,7 @@ const body = (props: IBodyProps) => {
                         </div>
                     </div>
                 </div>
-                <div className={styles.Content} style={{ marginBottom: "10px" }}>
+                <div className={styles.Content}>
                     <Label className={styles.Label} required={true}>Demo</Label>
                     <TextField
                         placeholder={"Give your solution a Name"}
@@ -243,6 +244,16 @@ const body = (props: IBodyProps) => {
                         className={styles.Input}
                         description={"Add here a video of a demo of the solution. Upload video in Office 365 channel (you can access video channel at the following link https://team.effem.com/portals/hub/_layouts/15/PointPublishing.aspx?app=video&p=c&chid=2f3aa33d-a62e-46bd-946f-cbdbf516d107&s=0&t=pfb) and add embed code here. NOTE: you can upload max 1 video"}
                         onBlur={props.demoOnBlur}
+                    />
+                </div>
+                <div className={styles.Content} style={{ marginBottom: "10px" }}>
+                    <Label className={styles.Label} required={false}>MVP Number</Label>
+                    <TextField
+                        placeholder={"Enter MVP Number"}
+                        maxLength={255}
+                        className={styles.Input}
+                        description={"If you are creating this solutuon in partnership with Digital Foundations, please enter assigned MVP Number. This MVP number should have been provided at approval."}
+                        onBlur={props.onMVPNumberOnBlur}
                     />
                 </div>
             </div>

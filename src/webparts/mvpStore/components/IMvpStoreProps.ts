@@ -32,5 +32,6 @@ export enum FieldName {
   Country = "Country",
   Segment = "Segment",
   Comments = "Comments",
-  WhoCreatedTheSolution = "Who_x0020_created_x0020_the_x002"
+  WhoCreatedTheSolution = "Who_x0020_created_x0020_the_x002",
+  MVPNumber = "MVP_x0020_Number",
 }

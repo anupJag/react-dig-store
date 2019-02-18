@@ -29,6 +29,7 @@ export interface INewItemState {
     othersWhoCreatedSolutionValue : string;
     fileUploadError : boolean;
     errorMessage : string;
+    MVPNumber : string;
 }
 
 export interface INewItemData {
@@ -47,6 +48,7 @@ export interface INewItemData {
     Comments: string;
     Segment: any;
     Who_x0020_created_x0020_the_x002 : any;
+    MVP_x0020_Number: string;
 }
 
 export interface IMultiData{

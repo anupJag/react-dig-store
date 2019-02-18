@@ -41,7 +41,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             othersDataSourceValue: '',
             othersWhoCreatedSolutionValue: '',
             fileUploadError: false,
-            errorMessage: ''
+            errorMessage: '',
+            MVPNumber : '',
         };
     }
 
@@ -625,6 +626,16 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         });
     }
 
+    protected onMVPNumberBlurHandler = (event: any) => {
+        let itemData: INewItemData = { ...this.state.newItemData };
+        const tempMVPNumber = escape(event.target.value).trim();
+        
+        itemData[FieldName.MVPNumber] = tempMVPNumber;
+        this.setState({
+            newItemData: itemData
+        });
+    }
+
     protected onStatusDropDownChangeHandler = (item: IDropdownOption): void => {
         let itemData: INewItemData = { ...this.state.newItemData };
         itemData[FieldName.Status] = item.key as string;
@@ -875,6 +886,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                         othersWhoCreatedSolutionOnBlur={this.othersWhoCreatedSolutionOnBlurHandler.bind(this)}
                         othersWhoCreatedSolutionValue={this.state.othersWhoCreatedSolutionValue}
                         demoOnBlur={this.onDemoBlurHandler.bind(this)}
+                        onMVPNumberOnBlur={this.onMVPNumberBlurHandler.bind(this)}
                     />
                 </div>
                 <div>

@@ -31,6 +31,7 @@ export interface IMVPDataView {
     Segment: any;
     Who_x0020_created_x0020_the_x002 : string[];
     AuthorId : number;
+    MVP_x0020_Number : string;
 }
 
 export interface IUserInfo{

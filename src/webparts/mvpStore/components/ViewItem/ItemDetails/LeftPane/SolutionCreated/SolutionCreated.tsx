@@ -9,14 +9,18 @@ const solutionCreated = (props : ISolutionCreatedProps) => {
     return (
         <div className={styles.solutionCreatedInfo}>
             <div className={styles.solutionCreatedData}>Team Responsible for Solution Development</div>
-            <ul className={styles.normalizeUL}>
+            <div className={styles.dataHolder}>
                 {
                     props.solutionCreated && props.solutionCreated.length > 0 ?
-                    props.solutionCreated.map(el => <li>{el}</li>)
+                    <ul className={styles.normalizeUL}>
+                        {
+                           props.solutionCreated.map(el => <li>{el}</li>) 
+                        }
+                    </ul>
                     :
-                    <p className={styles.nosolutionCreatedData}>Solution Created Data Not Avaialble</p>
+                    <p className={styles.noSolutionCreatedData}>Solution Created Data Not Avaialble</p>
                 }
-            </ul>
+            </div>
         </div>
     );
 };

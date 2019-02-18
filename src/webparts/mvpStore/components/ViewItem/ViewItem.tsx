@@ -55,7 +55,7 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
 
     private getItemDetails = async (value: number) => {
         let tempData: IMVPDataView = null;
-        await pnp.sp.web.lists.getById(this.props.listGUID).items.getById(value).select(FieldName.SolutionName, FieldName.Segment, `OData_${FieldName.Description}`, `${FieldName.ProductOwner}Id`, FieldName.Status, FieldName.WhoCreatedTheSolution, FieldName.ScreenShots, "AuthorId", `OData_${FieldName.BusinessProblem}`, FieldName.Features, `${FieldName.Country}/Title`, FieldName.Function, FieldName.TechnologyPlatform, FieldName.DataSource).expand(FieldName.Country).configure({
+        await pnp.sp.web.lists.getById(this.props.listGUID).items.getById(value).select(FieldName.SolutionName, FieldName.Segment, `OData_${FieldName.Description}`, `${FieldName.ProductOwner}Id`, FieldName.Status, FieldName.WhoCreatedTheSolution, FieldName.ScreenShots, "AuthorId", `OData_${FieldName.BusinessProblem}`, FieldName.Features, `${FieldName.Country}/Title`, FieldName.Function, FieldName.TechnologyPlatform, FieldName.DataSource, FieldName.MVPNumber).expand(FieldName.Country).configure({
             headers: {
                 'Accept': 'application/json;odata=nometadata',
                 'odata-version': ''
@@ -160,6 +160,7 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
                 functionListInfo={this.state.itemInfo.Target_x0020_User_x0020_Group}
                 techUsedInfo={this.state.itemInfo.Technology_x0020_platform as string[]}
                 dataSourceUsed={this.state.itemInfo.Data_x0020_Source as string[]}
+                mvpNumber={this.state.itemInfo["MVP_x0020_Number"] ? this.state.itemInfo["MVP_x0020_Number"] : "MVP Number Not Available"}
             />
         </React.Fragment> :
             null;

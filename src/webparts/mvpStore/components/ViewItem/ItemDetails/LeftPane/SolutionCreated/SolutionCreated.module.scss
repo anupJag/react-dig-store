@@ -11,15 +11,20 @@
         font-size: 1em;
         color: grey;
         width: 90%;
-        padding-bottom: 3px;
     }
 
-    .normalizeUL{
-        margin : 0;
+    .dataHolder{
+        width: 95%;
 
-        .nosolutionCreatedData{
+        .normalizeUL{
+            margin : 0;  
+        }
+    
+        .noSolutionCreatedData{
             font-size: 1em;
             color: red;
+            margin: 0;
         }
+
     }
 }
