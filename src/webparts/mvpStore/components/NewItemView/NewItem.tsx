@@ -42,7 +42,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             othersWhoCreatedSolutionValue: '',
             fileUploadError: false,
             errorMessage: '',
-            MVPNumber : '',
+            MVPNumber: '',
+            demoErrorMessage : ''
         };
     }
 
@@ -302,7 +303,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             resultSet.length = 0;
         }
 
-        peoplePickerData = { "results" : [...resultSet] };
+        peoplePickerData = { "results": [...resultSet] };
 
         tempItemData["Product_x0020_OwnerId"] = peoplePickerData;
 
@@ -335,7 +336,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             throw new Error("File Type Error");
         }
 
-        if(file.size > 7713582){
+        if (file.size > 7713582) {
             this.setState({
                 fileUploadError: true,
                 file: undefined,
@@ -560,7 +561,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
             resultSet.splice(findItem, 1);
         }
 
-        countrySelectedData = { "results" : [...resultSet] };
+        countrySelectedData = { "results": [...resultSet] };
 
         tempItemData["CountryId"] = countrySelectedData;
 
@@ -614,11 +615,64 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         });
     }
 
-    protected onDemoBlurHandler = (event: any) => {
+    protected getQueryStringParameter = (paramsToRetrieve: string, urlToBeSearchedFrom: string): string => {
+        let params = urlToBeSearchedFrom.split("?")[1].split("&amp;");
+        let strParams : string = "";
+        for (let i = 0; i < params.length; i++) {
+            var singleParam = params[i].split("=");
+            if (singleParam[0] === paramsToRetrieve)
+                strParams = singleParam[1];
+        }
+
+        return strParams;
+    }
+
+    protected onDemoBlurHandler = (event: any): void => {
+        
+        if(!event.target.value){
+            return;
+        }
+        
         let itemData: INewItemData = { ...this.state.newItemData };
         const tempFeature = escape(event.target.value).trim();
-        let demoValue : string = `
-        <div><div class="ms-rtestate-read ms-rte-embedcode ms-rtestate-notify ms-rte-embedil" contenteditable="false"><iframe width="640" height="360" src="${tempFeature}" allowfullscreen=""></iframe></div></div>
+
+        debugger;
+        let errorDemoOnBlurMessage : string = "";
+
+        
+
+        if(!(tempFeature.indexOf("_layouts/15/PointPublishing.aspx") >= 0)){
+            errorDemoOnBlurMessage = "Not a valid O365 Video URL";
+        }
+
+        if(!(this.getQueryStringParameter("app", tempFeature).indexOf("video") >= 0)){
+            errorDemoOnBlurMessage = `O365 Video is not valid, missing parameter 'app'`;
+        }
+
+        if(!this.getQueryStringParameter("chid", tempFeature)){
+            errorDemoOnBlurMessage = `O365 Video is not valid, missing parameter 'chid'`;
+        }
+
+        if(!this.getQueryStringParameter("vid", tempFeature)){
+            errorDemoOnBlurMessage = `O365 Video is not valid, missing parameter 'vid'`;
+        }
+
+        if(errorDemoOnBlurMessage){
+            this.setState({
+                demoErrorMessage : errorDemoOnBlurMessage
+            });
+            return;
+        }
+        else{
+            this.setState({
+                demoErrorMessage : ''
+            });
+        }
+
+        let iframeSource = `https://team.effem.com/portals/hub/_layouts/15/VideoEmbedHost.aspx?chId=${encodeURIComponent(this.getQueryStringParameter("chid", tempFeature))}&amp;vId=${encodeURIComponent(this.getQueryStringParameter("vid", tempFeature))}&amp;width=640&amp;height=360&amp;autoPlay=false&amp;showInfo=true`;
+
+        let demoValue: string = `
+        <div><iframe width="640" height="360" src="${iframeSource}" allowfullscreen></iframe></div>
         `;
         itemData[FieldName.Demo] = demoValue;
         this.setState({
@@ -629,7 +683,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
     protected onMVPNumberBlurHandler = (event: any) => {
         let itemData: INewItemData = { ...this.state.newItemData };
         const tempMVPNumber = escape(event.target.value).trim();
-        
+
         itemData[FieldName.MVPNumber] = tempMVPNumber;
         this.setState({
             newItemData: itemData
@@ -771,8 +825,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         }
 
         dataToBeAdded[FieldName.TechnologyPlatform] = {
-            __metadata : {
-                type : "Collection(Edm.String)"
+            __metadata: {
+                type: "Collection(Edm.String)"
             },
             results: [...tempTechPlatform]
         };
@@ -786,8 +840,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         }
 
         dataToBeAdded[FieldName.DataSource] = {
-            __metadata : {
-                type : "Collection(Edm.String)"
+            __metadata: {
+                type: "Collection(Edm.String)"
             },
             results: [...tempDataSource]
         };
@@ -801,8 +855,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         }
 
         dataToBeAdded[FieldName.WhoCreatedTheSolution] = {
-            __metadata : {
-                type : "Collection(Edm.String)"
+            __metadata: {
+                type: "Collection(Edm.String)"
             },
             results: [...tempWhoCreatedSolution]
         };
@@ -810,8 +864,8 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         //Update Segment
         const tempSegmentData = [...dataToBeAdded["Segment"]];
         dataToBeAdded["Segment"] = {
-            __metadata : {
-                type : "Collection(Edm.String)"
+            __metadata: {
+                type: "Collection(Edm.String)"
             },
             results: [...tempSegmentData]
         };
@@ -819,24 +873,24 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         //Update Target User Group
         const tempTargetUser = [...dataToBeAdded["Target_x0020_User_x0020_Group"]];
         dataToBeAdded["Target_x0020_User_x0020_Group"] = {
-            __metadata : {
-                type : "Collection(Edm.String)"
+            __metadata: {
+                type: "Collection(Edm.String)"
             },
             results: [...tempTargetUser]
         };
 
-        const itemToBeAdded = await pnp.sp.web.lists.getById(this.props.listGUID).items.add({...dataToBeAdded}).then((iar: ItemAddResult) => iar);
+        const itemToBeAdded = await pnp.sp.web.lists.getById(this.props.listGUID).items.add({ ...dataToBeAdded }).then((iar: ItemAddResult) => iar);
 
         console.log(itemToBeAdded);
 
-        this.props.onSaveCalled();        
+        this.props.onSaveCalled();
 
     }
 
     public render(): React.ReactElement<INewItemProps> {
 
         const hideSpinner: React.CSSProperties = !this.state.showSpinner ? { display: "none" } : null;
-        const enableSaveButton: boolean = this.state.newItemData && this.state.newItemData["OData__x006a_086"] && this.state.newItemData["CountryId"] && this.state.newItemData[FieldName.DataSource] && this.state.newItemData["OData__x0066_281"] && this.state.newItemData[FieldName.Features] && this.state.newItemData[FieldName.Function] && this.state.newItemData["Product_x0020_OwnerId"] && this.state.file && this.state.newItemData[FieldName.Segment] && this.state.newItemData[FieldName.SolutionName] && this.state.newItemData[FieldName.Status] && this.state.newItemData[FieldName.TechnologyPlatform] && this.state.newItemData[FieldName.WhoCreatedTheSolution] && this.state.newItemData["Demo"] ? true : false;
+        const enableSaveButton: boolean = this.state.newItemData && this.state.newItemData["OData__x006a_086"] && this.state.newItemData["CountryId"] && this.state.newItemData[FieldName.DataSource] && this.state.newItemData["OData__x0066_281"] && this.state.newItemData[FieldName.Features] && this.state.newItemData[FieldName.Function] && this.state.newItemData["Product_x0020_OwnerId"] && this.state.file && this.state.newItemData[FieldName.Segment] && this.state.newItemData[FieldName.SolutionName] && this.state.newItemData[FieldName.Status] && this.state.newItemData[FieldName.TechnologyPlatform] && this.state.newItemData[FieldName.WhoCreatedTheSolution] && !this.state.demoErrorMessage ? true : false;
 
         return (
             <Dialog
@@ -887,11 +941,12 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
                         othersWhoCreatedSolutionValue={this.state.othersWhoCreatedSolutionValue}
                         demoOnBlur={this.onDemoBlurHandler.bind(this)}
                         onMVPNumberOnBlur={this.onMVPNumberBlurHandler.bind(this)}
+                        demoErrorMessage={this.state.demoErrorMessage}
                     />
                 </div>
                 <div>
                     <DialogFooter>
-                        <div style={{display: "flex", justifyContent: "flex-end"}}>
+                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
                             <div className={styles.ShowSpinner} style={hideSpinner}>
                                 <Spinner label={""} size={SpinnerSize.medium} />
                             </div>

@@ -30,6 +30,7 @@ export interface INewItemState {
     fileUploadError : boolean;
     errorMessage : string;
     MVPNumber : string;
+    demoErrorMessage : string;
 }
 
 export interface INewItemData {
