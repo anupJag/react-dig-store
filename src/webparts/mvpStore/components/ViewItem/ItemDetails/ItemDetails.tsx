@@ -20,6 +20,7 @@ export interface IItemDetailsProps{
     techUsedInfo : string[];
     dataSourceUsed: string[];
     mvpNumber: string;
+    demoInfo: string;
 }
 
 
@@ -47,6 +48,7 @@ const itemDetails = (props : IItemDetailsProps) => {
                 descriptionInfo={props.descriptionInfo}
                 techUsedInfo={props.techUsedInfo}
                 dataSourceUsed={props.dataSourceUsed}
+                demoInfo={props.demoInfo}
             />
         </div>
     );

@@ -672,7 +672,7 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         let iframeSource = `https://team.effem.com/portals/hub/_layouts/15/VideoEmbedHost.aspx?chId=${encodeURIComponent(this.getQueryStringParameter("chid", tempFeature))}&amp;vId=${encodeURIComponent(this.getQueryStringParameter("vid", tempFeature))}&amp;width=640&amp;height=360&amp;autoPlay=false&amp;showInfo=true`;
 
         let demoValue: string = `
-        <div><iframe width="640" height="360" src="${iframeSource}" allowfullscreen></iframe></div>
+        <iframe style="position: absolute;top: 0;bottom: 0;width: 100%;height: 100%;border: 0;" src="${iframeSource}" allowfullscreen></iframe>
         `;
         itemData[FieldName.Demo] = demoValue;
         this.setState({

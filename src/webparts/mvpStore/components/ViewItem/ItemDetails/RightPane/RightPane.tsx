@@ -6,6 +6,7 @@ import Countries from './Countries/Countries';
 import DescriptionInfo from './Description/Description';
 import TechUsed from './TechUsed/TechUsed';
 import DataSource from './DataSources/DataSources';
+import Demo from './Demo/Demo';
 import styles from './RightPane.module.scss';
 
 export interface IRightPane {
@@ -18,6 +19,7 @@ export interface IRightPane {
     descriptionInfo: string;
     techUsedInfo: string[];
     dataSourceUsed: string[];
+    demoInfo: string;
 }
 
 
@@ -52,6 +54,9 @@ const rightPane = (props: IRightPane) => {
                     />
                 </div>
             </div>
+            <Demo 
+                demoInfo={props.demoInfo}
+            />
         </div>
     );
 };

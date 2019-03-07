@@ -1,0 +1,25 @@
+@import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
+
+.demoInfo{
+    width: 100%;
+    height: max-content;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+
+    .demoInfoHeader{
+        margin-bottom: 5px;
+        font-size: 1em;
+        color: grey;
+        width: 90%;
+        padding-bottom: 3px;
+    }
+
+    .demoInner{
+        position: relative;
+        overflow: hidden;
+        padding-top: 56.25%;
+        width: 95%;
+        
+    }
+}
