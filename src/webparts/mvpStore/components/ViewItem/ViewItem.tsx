@@ -161,7 +161,7 @@ export default class ViewItem extends React.Component<IViewItemProps, IViewItemS
                 techUsedInfo={this.state.itemInfo.Technology_x0020_platform as string[]}
                 dataSourceUsed={this.state.itemInfo.Data_x0020_Source as string[]}
                 mvpNumber={this.state.itemInfo["MVP_x0020_Number"] ? this.state.itemInfo["MVP_x0020_Number"] : "MVP Number Not Available"}
-                demoInfo={this.state.itemInfo["Demo"]}
+                demoInfo={this.state.itemInfo["Demo"] ? this.state.itemInfo["Demo"] : "Demo not available"}
             />
         </React.Fragment> :
             null;

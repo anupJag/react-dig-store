@@ -42,8 +42,8 @@ export interface IBodyProps {
     othersWhoCreatedSolutionOnBlur: (event: any) => void;
     othersWhoCreatedSolutionValue: string;
     demoOnBlur: (event: any) => void;
-    demoErrorMessage : string;
-    onMVPNumberOnBlur : (event : any) => void;
+    demoErrorMessage: string;
+    onMVPNumberOnBlur: (event: any) => void;
     errorMessage: string;
 }
 
@@ -72,7 +72,7 @@ const body = (props: IBodyProps) => {
                         onBlur={props.businessProblemOnBlur}
                     />
                 </div>
-                <div className={styles.Content} style={{paddingBottom : "10px"}}>
+                <div className={styles.Content} style={{ paddingBottom: "10px" }}>
                     <Label className={styles.Label} required={true}>Screenshot</Label>
                     <div className={styles.Input}>
                         <Logo
@@ -81,7 +81,7 @@ const body = (props: IBodyProps) => {
                             showError={props.showFileUploadError}
                             errorMessage={props.errorMessage}
                         />
-                    </div>           
+                    </div>
                 </div>
                 <div className={styles.Content}>
                     <Label className={styles.Label} required={true}>Country</Label>
@@ -239,19 +239,21 @@ const body = (props: IBodyProps) => {
                 </div>
                 <div className={styles.Content}>
                     <Label className={styles.Label}>Demo</Label>
-                    <TextField
-                        placeholder={"Give your solution a Name"}
-                        maxLength={255}
-                        className={styles.Input}
-                        description={"Add here a video of a demo of the solution. Upload video in Office 365 channel (you can access video channel at the following link https://team.effem.com/portals/hub/_layouts/15/PointPublishing.aspx?app=video&p=c&chid=2f3aa33d-a62e-46bd-946f-cbdbf516d107&s=0&t=pfb) and add embed code here. NOTE: you can upload max 1 video"}
-                        onBlur={props.demoOnBlur}
-                    />
-                    {
-                        props.demoErrorMessage ? 
-                        <div>
-                            {props.demoErrorMessage}
-                        </div> : null
-                    }
+                    <div className={styles.Input}>
+                        <TextField
+                            placeholder={"Give your solution a Name"}
+                            maxLength={255}
+                            description={"Add here a video of a demo of the solution. Upload video in Office 365 channel (you can access video channel at the following link https://team.effem.com/portals/hub/_layouts/15/PointPublishing.aspx?app=video&p=c&chid=2f3aa33d-a62e-46bd-946f-cbdbf516d107&s=0&t=pfb) and add embed code here. NOTE: you can upload max 1 video"}
+                            onBlur={props.demoOnBlur}
+                        />
+                        {
+                            props.demoErrorMessage ?
+                                <div style={{color : "red"}}>
+                                    {props.demoErrorMessage}
+                                </div> : null
+                        }
+                    </div>
+
                 </div>
                 <div className={styles.Content} style={{ marginBottom: "10px" }}>
                     <Label className={styles.Label} required={false}>MVP Number</Label>

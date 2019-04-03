@@ -644,16 +644,16 @@ export default class NewItem extends React.Component<INewItemProps, INewItemStat
         if(!(tempFeature.indexOf("_layouts/15/PointPublishing.aspx") >= 0)){
             errorDemoOnBlurMessage = "Not a valid O365 Video URL";
         }
-
-        if(!(this.getQueryStringParameter("app", tempFeature).indexOf("video") >= 0)){
+        else if(!(tempFeature.indexOf("?") >= 0)){
+            errorDemoOnBlurMessage = "O365 Video Paramters Missing";
+        }
+        else if(!(this.getQueryStringParameter("app", tempFeature).indexOf("video") >= 0)){
             errorDemoOnBlurMessage = `O365 Video is not valid, missing parameter 'app'`;
         }
-
-        if(!this.getQueryStringParameter("chid", tempFeature)){
+        else if(!this.getQueryStringParameter("chid", tempFeature)){
             errorDemoOnBlurMessage = `O365 Video is not valid, missing parameter 'chid'`;
         }
-
-        if(!this.getQueryStringParameter("vid", tempFeature)){
+        else if(!this.getQueryStringParameter("vid", tempFeature)){
             errorDemoOnBlurMessage = `O365 Video is not valid, missing parameter 'vid'`;
         }
 
